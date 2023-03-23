@@ -42,8 +42,8 @@ const Banner = () => {
     return (
         <div className='banner-bg'>
             <div className='flex items-center justify-center h-full'>
-                <div className='flex flex-col gap-10'>
-                    <h2 className='text-white text-center text-6xl font-extrabold' style={{fontFamily: 'lemon'}}>Search a venue for your function</h2>
+                <div className='flex flex-col gap-10 px-10 sm:px-20'>
+                    <h2 className='text-white text-center text-3xl sm:text-4xl md:text-6xl font-extrabold' style={{fontFamily: 'lemon'}}>Search a venue for your function</h2>
                     <div className='grid grid-cols-1 lg:grid-cols-4 gap-4'>
                         <div className='flex bg-white items-center p-2 rounded-lg w-full'>
                             <label htmlFor="type" className='pr-3 inline-block'>
@@ -60,7 +60,7 @@ const Banner = () => {
                         </div>
 
                         <div className='relative'>
-                            <div className='flex bg-white items-center p-2 rounded-lg'>
+                            <div className='flex justify-between bg-white items-center p-2 rounded-lg'>
                                 <input value={searchLocation} onChange={handleOnchange} type="text" className='outline-none pl-2 py-1' placeholder='location' name="location" id="location" />
                                 <label htmlFor="location" className='pr-2'>
                                     <BiCurrentLocation />

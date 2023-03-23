@@ -46,7 +46,7 @@ const ExploreTypes = () => {
                 {
                     exploreTypesContents.map(content => <div key={content.id}>
                         <div>
-                            <img style={{ height: '173px' }} src={content.image} alt="" />
+                            <img className='w-full' style={{ height: '173px' }} src={content.image} alt="" />
                         </div>
                         <h3 className='font-semibold'>{content.name}</h3>
                     </div>)
