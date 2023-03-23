@@ -1,25 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png'
+import useAuth from '../../../hooks/useAuth';
+import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png';
+import { FaUserAlt } from 'react-icons/fa';
 
 const Navbar = () => {
+    const { user, signOutUser } = useAuth();
 
     const navItems = <>
         <li><Link to='/'>Home</Link></li>
         <li><a>Service</a></li>
         <li><a>Contact Us</a></li>
-        <li tabIndex={0}>
-            <a className="justify-between">
-                User name
-                <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
-            </a>
-            <ul className="p-2 bg-accent">
-                <li><a>Submenu 1</a></li>
-                <li><a>Submenu 2</a></li>
-            </ul>
-        </li>
-        <li><Link to='/login'><button className='btn btn-secondary text-white'>Login</button></Link></li>
-        <li><Link to='/sign-up'><button className='btn btn-secondary text-white'>Sign up</button></Link></li>
+        {
+            user && user?.email && <li tabIndex={0}>
+                <a className="justify-between">
+                    <FaUserAlt />
+                    {user?.displayName ? user?.displayName : "activeUser"}
+                    <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" /></svg>
+                </a>
+                <ul className="p-2 bg-accent">
+                    <li><a>Submenu 1</a></li>
+                    <li><a onClick={signOutUser}>Logout</a></li>
+                </ul>
+            </li>
+        }
+        {
+            !user?.email && <>
+                <li><Link to='/login'><button className='btn btn-secondary text-white'>Login</button></Link></li>
+                <li><Link to='/sign-up'><button className='btn btn-secondary text-white'>Sign up</button></Link></li>
+            </>
+        }
     </>
     return (
         <div className="bg-primary">

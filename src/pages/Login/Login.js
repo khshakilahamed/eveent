@@ -2,20 +2,32 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineMail } from 'react-icons/hi';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 import facebook from './../../assets/icons/facebook.png';
 import google from './../../assets/icons/google+.png';
 import twitter from './../../assets/icons/twitter.png';
 
 const Login = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
-    const onSubmit = (data) => console.log(data);
+    const { signIn, signInWithGoogle } = useAuth();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const navigate = useNavigate();
+
+    const handleSignUp = (data) => {
+        signIn(data);
+        reset();
+        navigate('/');
+    }
+
+    const handleGoogleSignIn = () => {
+        signInWithGoogle(navigate);
+    }
 
     return (
         <div className='flex justify-center items-center w-full' style={{ minHeight: '75vh' }}>
             <div>
                 <h2 className='font-bold my-5 text-xl'>Sign in or create an account</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(handleSignUp)}>
                     <div className='border flex items-center p-2 w-96'>
                         <label htmlFor="email">
                             <HiOutlineMail className='mx-2 mr-5 cursor-pointer' />
@@ -56,7 +68,7 @@ const Login = () => {
                     <p>With your social network</p>
                     <div className='flex gap-4 my-2'>
                         <img className='cursor-pointer border p-1' src={facebook} alt="" />
-                        <img className='cursor-pointer border p-1' src={google} alt="" />
+                        <img onClick={handleGoogleSignIn} className='cursor-pointer border p-1' src={google} alt="" />
                         <img className='cursor-pointer border p-1' src={twitter} alt="" />
                     </div>
                     <p className='text-accent font-light'>Not a member? <Link to="/sign-up" className='cursor-pointer'>Sign up</Link></p>

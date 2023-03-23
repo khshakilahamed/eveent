@@ -9,16 +9,22 @@ import google from './../../assets/icons/google+.png';
 import twitter from './../../assets/icons/twitter.png';
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
+import useAuth from '../../hooks/useAuth';
 
 const SignUp = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
-    const onSubmit = (data) => console.log(data);
+    const {registerUser} = useAuth();
+    const { register, formState: { errors }, handleSubmit, reset } = useForm();
+
+    const handleSignUp = (data) => {
+        registerUser(data);
+        reset();
+    }
 
     return (
         <div className='flex justify-center items-center w-full' style={{ minHeight: '75vh' }}>
             <div>
                 <h2 className='font-bold my-5 text-xl'>Create an account</h2>
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(handleSignUp)}>
 
                     <div className='border flex items-center p-2 w-96'>
                         <label htmlFor="name">
