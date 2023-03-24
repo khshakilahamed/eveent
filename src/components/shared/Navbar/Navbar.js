@@ -30,6 +30,11 @@ const Navbar = () => {
                 <li><Link to='/sign-up'><button className='btn btn-secondary text-white'>Sign up</button></Link></li>
             </>
         }
+        {
+            user?.email && !user?.role && <>
+                <li><Link to="/userSpecification"><button class="btn btn-success">Getting Started</button></Link></li>
+            </>
+        }
     </>
     return (
         <div className="bg-primary">

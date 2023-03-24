@@ -4,7 +4,7 @@ const Contact = () => {
     return (
         <div className='my-14'>
             <h2 className='font-bold text-2xl mt-5'>Cities</h2>
-            <footer className=" grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-8 text-base-content bg-white">
+            <footer className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 text-base-content bg-white">
                 <div className='mt-5'>
                     <h3 className="footer-title">Dhaka</h3>
                     <p className="link link-hover">861 hall</p>

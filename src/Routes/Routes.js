@@ -4,6 +4,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import SearchPage from "../pages/SearchPage/SearchPage";
 import SignUp from "../pages/SignUp/SignUp";
+import UserSpecification from "../pages/UserSpecification/UserSpecification";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
             {
                 path: '/search',
                 element: <SearchPage />
+            },
+            {
+                path: '/userSpecification',
+                element: <UserSpecification />
             },
         ]
     }
