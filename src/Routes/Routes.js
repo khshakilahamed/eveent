@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router-dom";
+import AsHotelAdmin from "../components/UserSpecification/AsHotelAdmin/AsHotelAdmin";
 import AsUser from "../components/UserSpecification/AsUser/AsUser";
 import Main from "../Layout/Main/Main";
+import ExploreAll from "../pages/ExploreAll/ExploreAll";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import SearchPage from "../pages/SearchPage/SearchPage";
@@ -15,6 +17,10 @@ const router = createBrowserRouter([
             {
                 path: '/',
                 element: <Home></Home>
+            },
+            {
+                path: '/exploreAll',
+                element: <ExploreAll></ExploreAll>
             },
             {
                 path: '/login',
@@ -35,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: '/asUser',
                 element: <AsUser />
+            },
+            {
+                path: '/asHotelAdmin',
+                element: <AsHotelAdmin />
             },
         ]
     }

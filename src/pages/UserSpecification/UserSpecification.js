@@ -13,7 +13,7 @@ const UserSpecification = () => {
                     <h3 className='text-center text-xl font-bold my-3 hover:underline'>As User</h3>
                     <img className='w-full' src={asUser} alt="" />
                 </div>
-                <div className='mt-3 sm:mt-0 border cursor-pointer hover:bg-sky-300 hover:ease-linear hover:duration-300'>
+                <div onClick={() => navigate('/asHotelAdmin')} className='mt-3 sm:mt-0 border cursor-pointer hover:bg-sky-300 hover:ease-linear hover:duration-300'>
                     <h3 className='text-center text-xl font-bold my-3 hover:underline'>As Hotel Administrator</h3>
                     <img className='w-full' src={asHotelAdministrator} alt="" />
                 </div>

@@ -11,6 +11,12 @@ const Navbar = () => {
         <li><Link to='/'>Home</Link></li>
         <li><a>Service</a></li>
         <li><a>Contact Us</a></li>
+        <li><Link to="/exploreAll">Explore All</Link></li>
+        {
+            user?.email && role !== 'user' && role !== 'hotelAdmin' && <>
+                <li><Link to="/userSpecification"><button class="btn btn-success">Getting Started</button></Link></li>
+            </>
+        }
         {
             user && user?.email && <li tabIndex={0}>
                 <a className="justify-between">
@@ -30,11 +36,7 @@ const Navbar = () => {
                 <li><Link to='/sign-up'><button className='btn btn-secondary text-white'>Sign up</button></Link></li>
             </>
         }
-        {
-            user?.email && role !== 'user' && role !== 'hotelAdmin' && <>
-                <li><Link to="/userSpecification"><button class="btn btn-success">Getting Started</button></Link></li>
-            </>
-        }
+
     </>
     return (
         <div className="bg-primary">
