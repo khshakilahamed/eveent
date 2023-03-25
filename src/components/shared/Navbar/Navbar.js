@@ -20,7 +20,7 @@ const Navbar = () => {
                 </a>
                 <ul className="p-2 bg-accent">
                     <li><a>Submenu 1</a></li>
-                    <li><a onClick={signOutUser}>Logout</a></li>
+                    <li><button className='btn btn-secondary text-white' onClick={signOutUser}>Logout</button></li>
                 </ul>
             </li>
         }
@@ -31,7 +31,7 @@ const Navbar = () => {
             </>
         }
         {
-            user?.email && !user?.role && <>
+            user?.email && !user?.role === 'user' && <>
                 <li><Link to="/userSpecification"><button class="btn btn-success">Getting Started</button></Link></li>
             </>
         }

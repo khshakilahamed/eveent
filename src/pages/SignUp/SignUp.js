@@ -3,20 +3,20 @@ import { useForm } from 'react-hook-form';
 import { FaUserAlt } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import facebook from './../../assets/icons/facebook.png';
 import google from './../../assets/icons/google+.png';
 import twitter from './../../assets/icons/twitter.png';
-import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 import useAuth from '../../hooks/useAuth';
 
 const SignUp = () => {
     const {error, registerUser} = useAuth();
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
+    const navigate = useNavigate();
 
     const handleSignUp = (data) => {
-        registerUser({...data, reset});
+        registerUser({...data, reset, navigate});
     }
 
     return (
@@ -50,7 +50,7 @@ const SignUp = () => {
                             id='phone'
                             country="BD"
                             placeholder='Mobile Number'
-                            {...register("phone", { required: "Phone address is required" })}
+                            {...register("phone", { required: "Phone number is required" })}
                             aria-invalid={errors.phone ? "true" : "false"}
                         />
                     </div>
