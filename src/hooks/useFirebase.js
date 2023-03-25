@@ -8,6 +8,7 @@ initializeFirebase();
 const useFirebase = () => {
     const [user, setUser] = useState({});
     const [error, setError] = useState("");
+    const [role, setRole] = useState("");
 
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
@@ -55,8 +56,12 @@ const useFirebase = () => {
     const signInWithGoogle = (navigate) => {
         signInWithPopup(auth, googleProvider)
             .then((result) => {
+                const name = result.user.displayName;
+                const email = result.user.email;
                 setUser(result.user);
                 navigate("/");
+                toast.success("Successfully logged in");
+                saveGoogleUser({ name, email });
                 setError("");
             })
             .catch((error) => {
@@ -76,7 +81,6 @@ const useFirebase = () => {
     }
 
     const saveUser = (userInfo) => {
-        console.log(userInfo);
         fetch("http://localhost:5000/users", {
             method: "POST",
             headers: {
@@ -91,6 +95,31 @@ const useFirebase = () => {
                 }
             })
     }
+
+    const saveGoogleUser = (userInfo) => {
+        fetch("http://localhost:5000/users", {
+            method: "PUT",
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify(userInfo)
+        })
+            .then(res => res.json())
+            .then(data => {
+                // if (data.acknowledged) {
+                //     console.log(data);
+                //     toast.success("Successfully logged in");
+                // }
+            })
+    }
+
+    useEffect(() => {
+        fetch(`http://localhost:5000/user/${user.email}`)
+            .then(res => res.json())
+            .then(data => {
+                setRole(data?.role);
+            })
+    }, [user.email, user]);
 
     useEffect(() => {
         const unsubscribed = onAuthStateChanged(auth, user => {
@@ -107,6 +136,7 @@ const useFirebase = () => {
 
     return {
         user,
+        role,
         error,
         registerUser,
         signIn,

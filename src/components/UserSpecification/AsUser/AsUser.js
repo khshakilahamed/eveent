@@ -1,7 +1,9 @@
 import { allDistict, allDivision, districtsOf, divisionalDataOf, DivisonName, upazilasOf } from '@bangladeshi/bangladesh-address';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
 import PhoneInput from 'react-phone-number-input';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 
 const AsUser = () => {
@@ -12,9 +14,11 @@ const AsUser = () => {
     const divisions = allDivision();
     const districts = districtsOf(division);
     const upazilas = upazilasOf(district);
+    const navigate = useNavigate();
 
     const handleUpdateUser = data => {
-        const userInfo = { ...data, role: 'user' };
+        const role = 'user';
+        const userInfo = { ...data, role };
 
         fetch(`http://localhost:5000/user?email=${user?.email}`, {
             method: 'PUT',
@@ -25,7 +29,11 @@ const AsUser = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                if (data.modifiedCount) {
+                    toast.success(`You started as an ${role}`);
+                    navigate('/');
+                    reset();
+                }
             })
 
     };

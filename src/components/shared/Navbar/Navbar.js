@@ -5,7 +5,7 @@ import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png';
 import { FaUserAlt } from 'react-icons/fa';
 
 const Navbar = () => {
-    const { user, signOutUser } = useAuth();
+    const { user, role, signOutUser } = useAuth();
 
     const navItems = <>
         <li><Link to='/'>Home</Link></li>
@@ -31,7 +31,7 @@ const Navbar = () => {
             </>
         }
         {
-            user?.email && !user?.role === 'user' && <>
+            user?.email && role !== 'user' && role !== 'hotelAdmin' && <>
                 <li><Link to="/userSpecification"><button class="btn btn-success">Getting Started</button></Link></li>
             </>
         }
