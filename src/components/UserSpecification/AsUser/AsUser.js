@@ -58,6 +58,7 @@ const AsUser = () => {
                             divisions.map(division => <option value={division}>{division}</option>)
                         }
                     </select>
+                    {errors.division && <p role="alert" className='text-red-500'>{errors.division?.message}</p>}
                     {
                         districts[0] && <select onClick={(e) => setDisctrict(e.target.value)} name="" id="" className=" p-2 w-96 border outline-none"
                             {...register("district", { required: "District is required" })}
@@ -68,6 +69,7 @@ const AsUser = () => {
                             }
                         </select>
                     }
+                    {errors.district && <p role="alert" className='text-red-500'>{errors.district?.message}</p>}
                     {
                         upazilas[0] && <select name="" id="" className=" p-2 w-96 border outline-none"
                             {...register("upazila", { required: "Upazila is required" })}
@@ -78,11 +80,13 @@ const AsUser = () => {
                             }
                         </select>
                     }
+                    {errors.upazila && <p role="alert" className='text-red-500'>{errors.upazila?.message}</p>}
                     <input
                         placeholder='Enter your address'
                         className=" p-2 w-96 border outline-none"
                         {...register("address", { required: "Address is required" })}
                     />
+                    {errors.address && <p role="alert" className='text-red-500'>{errors.address?.message}</p>}
                     <PhoneInput
                         required
                         className='p-2 w-96 outline-none border'
