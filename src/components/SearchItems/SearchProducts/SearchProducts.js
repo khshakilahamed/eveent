@@ -5,7 +5,7 @@ import { AiOutlineStar } from 'react-icons/ai';
 import { TbCurrencyTaka } from 'react-icons/tb';
 
 const SearchProducts = ({ hotel }) => {
-    const { name, price, capacity, profileImg, location, services } = hotel;
+    const { name, price, capacity, profileImg, location, services } = hotel || {};
     // console.log(hotel)
     return (
         <div>
@@ -43,7 +43,7 @@ const SearchProducts = ({ hotel }) => {
                                 <p>Include services</p>
                                 <div className='flex flex-wrap gap-2'>
                                     {
-                                        services?.map(service => <p className='badge text-black bg-stone-200 p-3 mt-2 w-auto'>{service}</p>)
+                                        services?.map((service, i) => <p key={i} className='badge text-black bg-stone-200 p-3 mt-2 w-auto'>{service}</p>)
                                     }
                                 </div>
                             </div>

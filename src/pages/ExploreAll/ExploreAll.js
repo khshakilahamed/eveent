@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import SearchProducts from '../../components/SearchItems/SearchProducts/SearchProducts';
 import SearchQueryNav from '../../components/SearchItems/SearchQueryNav/SearchQueryNav';
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
+import Loading from '../../components/shared/Loading/Loading';
 
 const ExploreAll = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -20,7 +21,7 @@ const ExploreAll = () => {
     });
 
     if (isLoading) {
-        return <h2>Loading...</h2>
+        return <Loading/>
     }
 
 

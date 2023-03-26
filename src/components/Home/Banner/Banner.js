@@ -9,9 +9,15 @@ import { FiSearch } from 'react-icons/fi';
 import { format } from 'date-fns';
 import './Banner.css';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 
 const locations = [
+    'Dhaka',
+    'Barisal',
+    'Rangpur',
+    'Savar',
+    'Ashulia',
     'Nikunja 2, Dhaka',
     'Nikunja 1, Dhaka',
     'Nikunja-2 Bus stop, Dhaka',
@@ -29,6 +35,7 @@ const Banner = () => {
     const [searchLocation, setSearchLocation] = useState("");
     const [date, setDate] = useState("");
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
 
 
     const handleOnchange = (e) => {
@@ -59,6 +66,8 @@ const Banner = () => {
         }
         const formattedDate = format(new Date(date), 'PP');
 
+        navigate('/search', {state: { category, formattedDate, searchLocation }})
+
         console.log(category, formattedDate, searchLocation);
     }
 
@@ -74,7 +83,7 @@ const Banner = () => {
                                 <BsList className='text-black' />
                             </label>
                             <select onClick={handleCategory} required name="" id="" className='outline-none w-full cursor-pointer'>
-                                <option disabled selected>Select Category</option>
+                                <option value="" disabled selected>Select Category</option>
                                 <option value="wedding">Wedding</option>
                                 <option value="birthday">Birthday</option>
                                 <option value="engagement">Engagement</option>
