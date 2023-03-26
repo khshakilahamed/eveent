@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast';
 import PhoneInput from 'react-phone-number-input';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
+import { RiUploadCloudFill } from 'react-icons/ri';
+import { CiCircleRemove } from 'react-icons/ci';
 
 const AsHotelAdmin = () => {
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
@@ -21,14 +23,107 @@ const AsHotelAdmin = () => {
     const [addFacility, setAddFacility] = useState('');
     const [termsNConditions, setTermsNConditions] = useState([]);
     const [addTermsNConditions, setAddTermsNConditions] = useState('');
+    const [profileImg, setProfileImg] = useState({});
+    const [extraImages, setExtraImages] = useState([]);
+
+    const [uploadProfileImg, setUploadProfileImg] = useState({});
+    const [uploadExtraImages, setUploadExtraImages] = useState([]);
 
     const handleUpdateUser = data => {
         const role = 'hotelAdmin';
         if (services.length < 3) {
             return toast.error("Please, add at least three services");
         }
-        const userInfo = { ...data, role, services };
-        console.log(userInfo)
+        let userInfo = {
+            ...data,
+            email: user.email,
+            role,
+            services,
+            facilities,
+            termsCondition: termsNConditions,
+        };
+
+        console.log(uploadExtraImages.length);
+
+        fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${process.env.REACT_APP_imgBB_key}`, {
+            method: "POST",
+            body: uploadProfileImg
+        })
+            .then(res => res.json())
+            .then(imgData => {
+                console.log(imgData.data.url);
+                userInfo = { ...userInfo, profileImg: imgData?.data?.url }
+                // console.log(userInfo);
+
+                let APIarray = [];
+
+                uploadExtraImages.map(image => (
+                    APIarray.push(
+                        fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${process.env.REACT_APP_imgBB_key}`, {
+                            method: "POST",
+                            body: image
+                        })
+                            .then(res => res.json())
+                            .then(iData => {
+                                console.log(iData);
+                                return iData.data.url
+                            })
+                    )
+                ));
+
+                console.log(Promise.all(APIarray).then(res => {
+                    userInfo = { ...userInfo, images: res };
+                    const { name, email, district, division, upazila, address, phone, role, ...others } = userInfo;
+                    const userUpdateInfo = {
+                        name,
+                        address,
+                        district,
+                        division,
+                        phone,
+                        upazila,
+                        role,
+                    }
+                    const hotelInfo = {
+                        ...others,
+                        email,
+                        name,
+                        phone,
+                        location: `${address}, ${district}, ${division}`,
+                        rating: 0,
+                    }
+                    
+                    fetch(`http://localhost:5000/user?email=${user?.email}`, {
+                        method: 'PUT',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(userUpdateInfo)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.modifiedCount) {
+                                toast.success(`You started as an ${role}`);
+                                navigate('/');
+                                reset();
+                            }
+                        })
+
+                    fetch("http://localhost:5000/hotels", {
+                        method: 'POST',
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify(hotelInfo)
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.acknowledged) {
+                            }
+                        })
+                    // console.log(hotelInfo);
+                    // console.log(userUpdateInfo);
+                }));
+            })
     };
 
     const handleAddService = (e) => {
@@ -65,10 +160,115 @@ const AsHotelAdmin = () => {
         }
     }
 
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        // console.log(e.target.value);
+        // e.target.style.backgroundColor = "red";
+    }
+
+    const handleSetProfileImg = (file) => {
+        if (["png" || "gif" || "jpg" || 'jpeg'].map(tp => (file.type.includes(tp)))) {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.addEventListener('load', () => {
+                let fileObj = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    src: reader.result
+                }
+                setProfileImg(fileObj);
+            })
+        }
+        else {
+            toast.error("Please, upload only ['jpg', 'png']")
+        }
+    }
+
+    const handleUploadProfileImg = (e) => {
+        e.preventDefault();
+        const file = e.target.files[0];
+
+        handleSetProfileImg(file);
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        setUploadProfileImg(formData);
+    }
+
+    const handleDropProfileImg = (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files[0];
+        // console.log(e.dataTransfer.files[0]);
+        handleSetProfileImg(file);
+        const formData = new FormData();
+        formData.append('image', file);
+
+        setUploadProfileImg(formData);
+    }
+
+    const handleSetExtraImages = (file) => {
+        // console.log(file);
+        if (["png" || "gif" || "jpg" || 'jpeg'].map(tp => (file.type.includes(tp)))) {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.addEventListener('load', () => {
+                let fileObj = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    src: reader.result
+                }
+                setExtraImages([...extraImages, fileObj]);
+                console.log(extraImages);
+            })
+        }
+        else {
+            toast.error("Please, upload only ['jpg', 'png']")
+        }
+    }
+
+    const handleDragExtraImages = (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        for (let file of files) {
+            let formData = new FormData();
+            formData.append('image', file);
+            setUploadExtraImages([...uploadExtraImages, formData]);
+            handleSetExtraImages(file);
+        }
+        console.log(uploadExtraImages)
+        // setExtraImages(extraImageCollection);
+    }
+
+    const handleUploadExtraImages = (e) => {
+        e.preventDefault();
+        const files = e.target.files;
+        for (let file of files) {
+            let formData = new FormData();
+            formData.append('image', file);
+            setUploadExtraImages([...uploadExtraImages, formData]);
+            handleSetExtraImages(file);
+        }
+        // console.log(files);
+    }
+
+    // console.log(extraImages);
+
+    const handleDelete = (e) => {
+        e.preventDefault();
+        const parent = e.target.parentElement;
+        // console.log(extraImages);
+
+        // console.log(parent?.children[1]?.getAttribute('src'));
+        setExtraImages((prev) => prev.filter(p => p.src !== parent?.children[1]?.getAttribute('src')));
+    }
+
     return (
         <div className='max-w-[1400px] min-h-[60vh] px-10 sm:px-20 mx-auto my-14'>
             <div className="lg:flex flex-row-reverse">
-                <div className='hidden lg:block w-0 lg:w-1/2 mt-16'>
+                <div className='hidden lg:flex flex-col justify-center w-0 lg:w-1/2 mt-16'>
                     {
                         services?.length !== 0 && <div>
                             <h2 className='font-bold my-5 text-xl'>Services</h2>
@@ -104,10 +304,9 @@ const AsHotelAdmin = () => {
                 <div className='w-full lg:w-1/2'>
                     <div className='w-full h-full flex flex-col justify-center items-center'>
                         <div>
-                            <h2 className='font-bold my-5 text-xl'>You are getting started as <br /> Hotel Administrator</h2>
+                            <h2 className='font-bold my-5 text-xl text-center'>You are getting started as <br /> Hotel Administrator</h2>
                         </div>
                         <form onSubmit={handleSubmit(handleUpdateUser)} className="flex flex-col gap-3">
-
                             <input
                                 placeholder='Enter the Hall Name'
                                 className=" p-2 w-96 border outline-none"
@@ -128,6 +327,21 @@ const AsHotelAdmin = () => {
                                 aria-invalid={errors.phone ? "true" : "false"}
                             />
                             {errors.phone && <p role="alert" className='text-red-500'>{errors.phone?.message}</p>}
+
+                            {
+                                profileImg.length !== 0 && <img className='w-16' src={profileImg.src} alt="" />
+                            }
+                            <div
+                                onDrop={handleDropProfileImg}
+                                onDragOver={handleDragOver}
+                                className=' w-96 border-dashed border-2 border-slate-300'
+                            >
+                                <label htmlFor="file" className='h-full flex flex-col items-center justify-center'>
+                                    <h2 className='text-center my-3'><span className='text-xl'>Drag & Drop</span> <br /> hall profile picture</h2>
+                                    <RiUploadCloudFill size={30} className="cursor-pointer mb-3" />
+                                    <input onChange={handleUploadProfileImg} type="file" id="file" className='hidden' />
+                                </label>
+                            </div>
 
                             <input
                                 type="number"
@@ -246,6 +460,31 @@ const AsHotelAdmin = () => {
                                 {...register("description", { required: "Description is required" })}
                             />
                             {errors.description && <p role="alert" className='text-red-500'>{errors.description?.message}</p>}
+
+                            {
+                                extraImages.length !== 0 && <div className='w-96 flex flex-wrap gap-4'>
+                                    {
+                                        extraImages?.map(image => <div className='relative'>
+                                            <div>
+                                                <CiCircleRemove onClick={handleDelete} className='absolute -top-2 -right-2 bg-warning text-white cursor-pointer' />
+                                                <img className='w-16 h-16 object-fill' src={image.src} alt="" />
+                                            </div>
+                                        </div>)
+                                    }
+                                </div>
+                            }
+                            <div
+                                onDrop={handleDragExtraImages}
+                                onDragOver={handleDragOver}
+                                className=' w-96 border-dashed border-2 border-slate-300 cursor-pointer'
+                            >
+                                <label htmlFor="files" className='h-full flex flex-col items-center justify-center cursor-pointer'>
+                                    <h2 className='text-center my-5'><span className='text-xl'>Drag & Drop</span> <br /> hall extra images for Gallery</h2>
+                                    <RiUploadCloudFill size={30} className="cursor-pointer mb-5" />
+                                    <input onChange={handleUploadExtraImages} type="file" id="files" className='hidden' multiple />
+                                </label>
+                            </div>
+
 
                             <input className='btn btn-accent' type="submit" value="Submit" />
                         </form>
