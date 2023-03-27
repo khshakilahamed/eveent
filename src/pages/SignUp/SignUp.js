@@ -11,12 +11,16 @@ import PhoneInput from 'react-phone-number-input'
 import useAuth from '../../hooks/useAuth';
 
 const SignUp = () => {
-    const {error, registerUser} = useAuth();
+    const { error, registerUser, signInWithGoogle } = useAuth();
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const navigate = useNavigate();
 
     const handleSignUp = (data) => {
-        registerUser({...data, reset, navigate});
+        registerUser({ ...data, reset, navigate });
+    }
+
+    const handleGoogleSignIn = () => {
+        signInWithGoogle(navigate);
     }
 
     return (
@@ -41,9 +45,6 @@ const SignUp = () => {
                     {errors.name && <p role="alert" className='text-red-500'>{errors.name?.message}</p>}
 
                     <div className='border flex items-center p-2 w-96 mt-5'>
-                        {/* <label htmlFor="phone">
-                            <HiOutlineMail className='mx-2 mr-5 cursor-pointer' />
-                        </label> */}
                         <PhoneInput
                             required
                             className='w-full outline-none'
@@ -105,7 +106,7 @@ const SignUp = () => {
                     <p>With your social network</p>
                     <div className='flex gap-4 my-2'>
                         <img className='cursor-pointer border p-1' src={facebook} alt="" />
-                        <img className='cursor-pointer border p-1' src={google} alt="" />
+                        <img  onClick={handleGoogleSignIn}  className='cursor-pointer border p-1' src={google} alt="" />
                         <img className='cursor-pointer border p-1' src={twitter} alt="" />
                     </div>
                     <p className='text-accent font-light'>Already have an account? <Link to='/login' className='cursor-pointer'>login</Link></p>

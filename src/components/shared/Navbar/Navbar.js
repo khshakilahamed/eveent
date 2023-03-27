@@ -13,7 +13,7 @@ const Navbar = () => {
         <li><a>Contact Us</a></li>
         <li><Link to="/exploreAll">Explore All</Link></li>
         {
-            user?.email && role !== 'user' && role !== 'hotelAdmin' && <>
+            user?.email && !(role === 'user' || role === 'hotelAdmin') && <>
                 <li><Link to="/userSpecification"><button className="btn btn-success">Getting Started</button></Link></li>
             </>
         }

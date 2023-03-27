@@ -2,11 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  color: black;
-}
 
 body {
+  color: black;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Dancing Script', cursive, 'Inter', 'Roboto', 'Lemon', sans-serif, cursive;

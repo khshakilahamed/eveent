@@ -1,15 +1,23 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 import SearchProducts from '../../components/SearchItems/SearchProducts/SearchProducts';
-import SearchQueryNav from '../../components/SearchItems/SearchQueryNav/SearchQueryNav';
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
+import useAuth from '../../hooks/useAuth';
+import BookingModal from '../BookingModal/BookingModal';
 
 const ExploreAll = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [sortQuery, setSortQuery] = useState("");
     const [searchItem, setSearchItem] = useState("");
+    const [hotelDetails, setHotelDetails] = useState(null);
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+
 
     const { data: hotels, isLoading } = useQuery({
         queryKey: ['hotels'],
@@ -20,9 +28,24 @@ const ExploreAll = () => {
         }
     });
 
+    const { data: userInfo } = useQuery({
+        queryKey: [user],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/user/${user?.email}`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
+    // console.log(userInfo);
+
     if (isLoading) {
-        return <Loading/>
+        return <Loading />
     }
+
+    // if (userInfo?.role === 'hotelAdmin' && hotelDetails) {
+    //     return toast.error('You are a hotel admin', { id: "hotelAdmin" });
+    // }
 
 
     const handleSearchItem = (data) => {
@@ -76,17 +99,24 @@ const ExploreAll = () => {
                 </div>
                 <hr />
                 <div className='p-3 lg:flex gap-4'>
-                    <SortSection setSortQuery={setSortQuery} total={hotels.length}  />
+                    <SortSection setSortQuery={setSortQuery} total={hotels.length} />
                     <div>
                         {
                             transFormItems().map(hotel => (
-                                <SearchProducts hotel={hotel} />
+                                <SearchProducts hotel={hotel} setHotelDetails={setHotelDetails} />
                             ))
                         }
                     </div>
                     {/* <SearchProducts /> */}
                 </div>
             </div>
+            {
+                // hotelDetails && <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
+                hotelDetails && (
+                    !userInfo?.role ? navigate('/userSpecification') : <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
+                )
+            }
+
         </div>
     );
 };

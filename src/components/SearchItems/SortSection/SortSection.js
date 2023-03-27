@@ -8,7 +8,7 @@ const SortSection = ({ setSortQuery, total }) => {
             <div className='flex items-center lg:block lg:mt-5 '>
                 <p className='sm:mr-5'>Short by</p>
 
-                <select onClick={(e) => setSortQuery(e.target.value)} className='p-2 mt-2' style={{ backgroundColor: "#F5F5F7" }}>
+                <select onClick={(e) => setSortQuery(e.target.value)} className='p-2 mt-2 outline-none' style={{ backgroundColor: "#F5F5F7" }}>
                     <option value="" disabled selected>Select one</option>
                     {/* <option value="">Popularity</option> */}
                     <option value="capacityLowToHigh">Capacity (low &gt; High)</option>
