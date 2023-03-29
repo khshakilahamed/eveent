@@ -120,7 +120,7 @@ const Banner = () => {
                                 minDate={new Date()}
                                 className='outline-none'
                                 selected={date}
-                                onChange={(date) => setDate(new Date())}
+                                onChange={(date) => setDate(date)}
                                 dateFormat="PP"
                                 style={{ zIndex: 1 }}
                             />

@@ -10,7 +10,7 @@ module.exports = {
           "primary": "#C8B027",
           "secondary": "#01202C",
           "accent": "#60A4BF",
-          "registerBtn": "#60A4BF"
+          neutral: "#3D4451"
         },
       },
     ],

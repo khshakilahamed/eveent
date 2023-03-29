@@ -8,7 +8,7 @@ const Footer = () => {
                 <div>
                     <div className='md:flex items-center gap-5'>
                         <img className='w-40 h-10' src={logo} alt="" />
-                        <p className='text-white'>@ 2022 eveent.com.bd</p>
+                        <p className='text-white'>@ {`${new Date().getFullYear()}`} eveent.com.bd</p>
                     </div>
                 </div>
                 <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-20 sm:mt-0'>

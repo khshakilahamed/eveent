@@ -1,7 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import AsHotelAdmin from "../components/UserSpecification/AsHotelAdmin/AsHotelAdmin";
 import AsUser from "../components/UserSpecification/AsUser/AsUser";
+import DashboardLayout from "../Layout/DashboardLayout/DashboardLayout";
 import Main from "../Layout/Main/Main";
+import AllBookings from "../pages/Dashboard/AllBookings/AllBookings";
+import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
+import Dashboard from "../pages/Dashboard/Dashboard/Dashboard";
+import MyBookings from "../pages/Dashboard/MyBookings/MyBookings";
 import ExploreAll from "../pages/ExploreAll/ExploreAll";
 import Home from "../pages/Home/Home";
 import HotelDetails from "../pages/HotelDetails/HotelDetails";
@@ -51,6 +56,28 @@ const router = createBrowserRouter([
             {
                 path: '/asHotelAdmin',
                 element: <AsHotelAdmin />
+            },
+        ]
+    },
+    {
+        path: '/dashboard',
+        element: <DashboardLayout />,
+        children: [
+            {
+                path: '/dashboard',
+                element: <MyBookings />
+            },
+            {
+                path: '/dashboard/myBookings',
+                element: <MyBookings />
+            },
+            {
+                path: '/dashboard/allUsers',
+                element: <AllUsers />
+            },
+            {
+                path: '/dashboard/allBookings',
+                element: <AllBookings />
             },
         ]
     }

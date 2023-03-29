@@ -35,6 +35,7 @@ const BookingModal = ({ hotelDetails, user, userInfo, setHotelDetails }) => {
             district,
             division,
             address,
+            bookingTime: new Date(),
             date: format(new Date(date), 'PP'),
         };
 

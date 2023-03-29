@@ -1,17 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SearchProducts from '../../components/SearchItems/SearchProducts/SearchProducts';
 import SearchQueryNav from '../../components/SearchItems/SearchQueryNav/SearchQueryNav';
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
+import useAuth from '../../hooks/useAuth';
+import BookingModal from '../BookingModal/BookingModal';
 
 const SearchPage = () => {
     const [sortQuery, setSortQuery] = useState("");
     const [searchItem, setSearchItem] = useState("");
     const location = useLocation();
     const { category, formattedDate, searchLocation } = location?.state;
-    console.log(category, formattedDate, searchLocation);
+    // console.log(category, formattedDate, searchLocation);
+    const [hotelDetails, setHotelDetails] = useState(null);
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const pathname = useLocation().pathname.split('/')[1];
 
     const { data: hotels, isLoading } = useQuery({
         queryKey: ['hotels', searchLocation],
@@ -22,13 +30,23 @@ const SearchPage = () => {
         }
     });
 
+    const { data: userInfo } = useQuery({
+        queryKey: [user],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/user/${user?.email}`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
     if (isLoading) {
-        return <Loading/>
+        return <Loading />
     }
 
     // const handleSearchItem = (data) => {
     //     setSearchItem(data.search);
     // }
+
 
     const transFormItems = () => {
         let sortedItems = hotels;
@@ -64,17 +82,23 @@ const SearchPage = () => {
     return (
         <div className='max-w-[1400px] px-10 sm:px-20 mx-auto my-14'>
             <div style={{ backgroundColor: "#F5F5F7" }}>
-                <SearchQueryNav category={category} searchLocation={searchLocation} formattedDate={formattedDate}/>
+                <SearchQueryNav category={category} searchLocation={searchLocation} formattedDate={formattedDate} />
                 <hr />
                 <div className='p-3 lg:flex gap-4'>
-                    <SortSection  setSortQuery={setSortQuery} total={hotels.length} />
+                    <SortSection setSortQuery={setSortQuery} total={hotels.length} />
                     <div>
                         {
-                            transFormItems().map(hotel => <SearchProducts hotel={hotel} />)
+                            transFormItems().map(hotel => <SearchProducts hotel={hotel} setHotelDetails={setHotelDetails} />)
                         }
                     </div>
                 </div>
             </div>
+            {
+                // hotelDetails && <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
+                hotelDetails && (
+                    !userInfo?.role ? navigate('/userSpecification') : <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
+                )
+            }
         </div>
     );
 };
