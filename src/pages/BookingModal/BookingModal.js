@@ -53,7 +53,7 @@ const BookingModal = ({ hotelDetails, user, userInfo, setHotelDetails }) => {
                     toast.success("Successfully booked");
                     setLoading(false);
                     setHotelDetails(null);
-                    console.log(data)
+                    // console.log(data)
                 }
                 else {
                     toast.error(data.message);

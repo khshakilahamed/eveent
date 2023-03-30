@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { toast } from 'react-hot-toast';
+import swal from 'sweetalert';
 import Loading from '../../../components/shared/Loading/Loading';
+import useUser from '../../../hooks/useUser';
 
 const AllUsers = () => {
-    const { data: users, isLoading, } = useQuery({
+    const { data: users, isLoading, refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await fetch('http://localhost:5000/users')
@@ -12,15 +15,47 @@ const AllUsers = () => {
         }
     });
 
+    const handleMakeAdmin = (id, email) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once make admin, he/she will get all access",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    fetch(`http://localhost:5000/user/makeAdmin/${id}/${email}`, {
+                        method: 'PUT',
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log(data);
+                            if (data.acknowledged && data.modifiedCount) {
+                                toast.success("Admin created!");
+                                refetch();
+                            }
+                            // swal("Poof! Your imaginary file has been deleted!", {
+                            //     icon: "success",
+                            // });
+                        })
+                } else {
+                    swal("See you soon!");
+                    // toast("You can try later");
+                }
+            });
+    }
+
     if (isLoading) {
         return <Loading />
     }
 
-    console.log(users);
+    // console.log(users);
 
     return (
         <div>
             <div className="overflow-x-auto w-full mt-10">
+                <h2 className='pb-6 text-2xl'>All Users</h2>
                 <table className="table w-full">
                     <thead className='bg-slate-900 text-white'>
                         <tr>
@@ -64,7 +99,7 @@ const AllUsers = () => {
                                     {user.role}
                                 </td>
                                 <th>
-                                    <button className="btn btn-ghost btn-xs">details</button>
+                                    <button onClick={() => handleMakeAdmin(user?._id, user?.email)} className="btn btn-accent btn-xs">Make Admin</button>
                                 </th>
                             </tr>)
                         }

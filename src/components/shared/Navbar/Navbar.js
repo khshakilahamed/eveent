@@ -3,9 +3,16 @@ import { Link } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png';
 import { FaUserAlt } from 'react-icons/fa';
+import useUser from '../../../hooks/useUser';
+import Loading from '../Loading/Loading';
 
 const Navbar = () => {
-    const { user, role, signOutUser } = useAuth();
+    const { user, role, signOutUser, loading } = useAuth();
+    const [userInfo] = useUser();
+
+    // if(loading){
+    //     return <Loading/>
+    // }
 
     const navItems = <>
         <li><Link to='/'>Home</Link></li>
@@ -14,13 +21,13 @@ const Navbar = () => {
         <li><Link to="/exploreAll">Explore All</Link></li>
         <li><Link to="/dashboard">Dashboard</Link></li>
         {
-            user?.email && role !== 'user' && role !== 'hotelAdmin' && <>
+            user?.email && userInfo?.role !== 'user' && userInfo?.role !== 'hotelAdmin' && userInfo.role!=='admin' && <>
                 <li><Link to="/userSpecification"><button className="btn btn-success">Getting Started</button></Link></li>
             </>
         }
         {
             user && user?.email && <>
-                <li><Link to="/dashboard">Dashboard</Link></li>
+                {/* <li><Link to="/dashboard">Dashboard</Link></li> */}
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
@@ -30,7 +37,7 @@ const Navbar = () => {
                     </label>
                     <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
                         <li><a href="#">Name: {user?.displayName}</a></li>
-                        <li><Link to="/">Profile</Link></li>
+                        <li><Link to="/dashboard/myProfile">Profile</Link></li>
                         <li>
                             <button onClick={signOutUser} className="justify-between">
                                 Sign Out

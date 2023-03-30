@@ -9,11 +9,14 @@ const useFirebase = () => {
     const [user, setUser] = useState({});
     const [error, setError] = useState("");
     const [role, setRole] = useState("");
+    const [loading, setLoading] = useState(true);
+
 
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
 
     const registerUser = ({ name, phone, email, password, reset, navigate }) => {
+        setLoading(true);
         createUserWithEmailAndPassword(auth, email, password)
             .then((result) => {
                 setError("");
@@ -22,9 +25,11 @@ const useFirebase = () => {
                 saveUser({ name, email });
                 navigate('/');
                 reset();
+                setLoading(false);
             })
             .catch((error) => {
                 setError(error.message);
+                setLoading(false);
             });
     }
 
@@ -40,43 +45,53 @@ const useFirebase = () => {
             });
     }
 
-    const signIn = ({ email, password, navigate, reset }) => {
+    const signIn = ({ email, password, navigate, from, reset }) => {
+        setLoading(true);
         signInWithEmailAndPassword(auth, email, password)
             .then((result) => {
                 setUser(result.user);
-                navigate('/');
+                navigate(from, { replace: true });
                 setError("");
                 reset();
+                setLoading(false);
             })
             .catch((error) => {
                 setError(error.message);
+                setLoading(false);
             })
     }
 
-    const signInWithGoogle = (navigate) => {
+    const signInWithGoogle = (navigate, from) => {
+        setLoading(true);
         signInWithPopup(auth, googleProvider)
             .then((result) => {
                 const name = result.user.displayName;
                 const email = result.user.email;
+                const photoURL = result.user.photoURL;
                 setUser(result.user);
-                navigate("/");
+                navigate(from, { replace: true });
                 toast.success("Successfully logged in");
-                saveGoogleUser({ name, email });
+                saveGoogleUser({ name, email, photoURL });
                 setError("");
+                setLoading(false);
             })
             .catch((error) => {
                 setError(error.message);
+                setLoading(false);
             })
     }
 
     const signOutUser = () => {
+        setLoading(true);
         signOut(auth)
             .then(() => {
                 setUser("");
                 setError("");
+                setLoading(false);
             })
             .catch((error) => {
                 setError(error.message);
+                setLoading(false);
             })
     }
 
@@ -129,15 +144,17 @@ const useFirebase = () => {
             else {
                 setUser({});
             }
+            setLoading(false);
         });
         return () => unsubscribed;
-    }, [auth]);
+    }, [auth, user.email]);
 
 
     return {
         user,
         role,
         error,
+        loading,
         registerUser,
         signIn,
         signInWithGoogle,

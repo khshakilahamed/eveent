@@ -1,20 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import { BsTelephoneForward } from 'react-icons/bs';
+import { HiOutlineMail } from 'react-icons/hi';
+import { ImCancelCircle, ImLocation } from 'react-icons/im';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { TbCurrencyTaka } from 'react-icons/tb';
-import { ImCancelCircle, ImLocation } from 'react-icons/im';
 import { Link } from 'react-router-dom';
 import Loading from '../../../components/shared/Loading/Loading';
 import useAuth from '../../../hooks/useAuth';
-import { BsTelephoneForward } from 'react-icons/bs';
-import { HiOutlineMail } from 'react-icons/hi';
 
-const MyBookings = () => {
+const MyHotelBookings = () => {
     const { user } = useAuth();
-    const { data: bookings, isLoading, } = useQuery({
-        queryKey: [user],
+
+    const { data: bookings, isLoading } = useQuery({
+        queryKey: [user?.email],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/bookings/${user?.email}`)
+            const res = await fetch(`http://localhost:5000/hotel/bookings/${user?.email}`)
             const data = await res.json();
             return data;
         }
@@ -22,26 +23,22 @@ const MyBookings = () => {
 
     if (isLoading) {
         return <Loading />
-    };
+    }
 
-    // console.log(bookings);
+
 
     return (
         <div>
             <div className="overflow-x-auto w-full mt-10">
-                <h2 className='pb-6 text-2xl'>All Bookings</h2>
+                <h2 className='pb-6 text-2xl'>Hotel Bookings</h2>
                 <table className="table w-full">
                     <thead className='bg-slate-900 text-white'>
                         <tr>
-                            {/* <th>
-                                <label>
-                                    <input type="checkbox" className="checkbox" />
-                                </label>
-                            </th> */}
                             <th>Hall</th>
                             <th>Contact</th>
                             <th>Price</th>
-                            <th>Payment</th>
+                            <th>Event Date</th>
+                            <th>Payment <br /> Status</th>
                             <th>Action</th>
                             <th></th>
                         </tr>
@@ -55,15 +52,11 @@ const MyBookings = () => {
                                             <div className="flex items-center space-x-3">
                                                 <div className="avatar">
                                                     <div className="mask mask-squircle w-12 h-12">
-                                                        <Link to={`/details/${booking.hotelId}`}>
-                                                            <img src={`${booking?.hotelProfileImg ? booking.hotelProfileImg : "https://www.avantixlearning.ca/wp-content/uploads/2022/10/delete-page-page-in-word-featured.png"}`} alt="userPhoto" />
-                                                        </Link>
+                                                        <img src={`${booking?.photoURL ? booking.photoURL : "https://www.avantixlearning.ca/wp-content/uploads/2022/10/delete-page-page-in-word-featured.png"}`} alt="userPhoto" />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <Link to={`/details/${booking.hotelId}`}>
-                                                        <h2 className="font-bold">{booking?.hotelName}</h2>
-                                                    </Link>
+                                                    <h2 className="font-bold">{booking?.name}</h2>
                                                     <span className="text-sm opacity-50">{booking?.date}</span>
                                                 </div>
                                             </div>
@@ -77,18 +70,6 @@ const MyBookings = () => {
                                                 <BsTelephoneForward size={20} />
                                                 <a href={`tel:${booking.hotelPhone}`}>{booking.hotelPhone}</a>
                                             </div>
-                                            <div className='flex items-center gap-3'>
-                                                <ImLocation size={22} />
-                                                <div>
-                                                    {
-                                                        booking?.hotelLocation?.split(",")?.map((location, i) =>
-                                                            <>
-                                                                <p key={i}>{location}</p>
-                                                            </>
-                                                        )
-                                                    }
-                                                </div>
-                                            </div>
                                         </td>
                                         <td>
                                             <div className='flex items-center'>
@@ -97,13 +78,20 @@ const MyBookings = () => {
                                             </div>
                                         </td>
                                         <td>
-                                            <button className='btn btn-sm btn-accent'>Pay</button>
+                                            <p>{booking?.date}</p>
+                                        </td>
+                                        <td>
+                                            <p
+                                                className={`${booking?.paymentStatus ? "text-accent" : "text-warning"}`}
+                                            >
+                                                {booking?.paymentStatus ? "Paid" : "Unpaid"}
+                                            </p>
                                         </td>
                                         <th>
                                             <div className='flex flex-col gap-3'>
-                                                <button className='btn btn-success btn-outline btn-sm'>
+                                                {/* <button className='btn btn-success btn-outline btn-sm'>
                                                     <ImCancelCircle size={22} />
-                                                </button>
+                                                </button> */}
                                                 <button className='btn btn-error btn-outline btn-sm'>
                                                     <RiDeleteBin6Line size={22} />
                                                 </button>
@@ -123,4 +111,4 @@ const MyBookings = () => {
     );
 };
 
-export default MyBookings;
+export default MyHotelBookings;

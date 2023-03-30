@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { HiOutlineMail } from 'react-icons/hi';
 import { RiLockPasswordFill } from 'react-icons/ri';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import facebook from './../../assets/icons/facebook.png';
 import google from './../../assets/icons/google+.png';
@@ -12,13 +12,16 @@ const Login = () => {
     const { error, signIn, signInWithGoogle } = useAuth();
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const from = location?.state?.from?.pathname || '/';
 
     const handleSignIn = (data) => {
-        signIn({...data, navigate, reset});
+        signIn({ ...data, navigate, from, reset });
     }
 
     const handleGoogleSignIn = () => {
-        signInWithGoogle(navigate);
+        signInWithGoogle(navigate, from);
     }
 
     return (

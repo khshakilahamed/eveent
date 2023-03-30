@@ -8,9 +8,10 @@ import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FcApproval } from 'react-icons/fc';
 import Loading from '../../../components/shared/Loading/Loading';
 import { useState } from 'react';
-import ConfirmationModal from '../../../components/shared/ConfirmationModal/ConfirmationModal';
 import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+const copy = require('clipboard-copy')
 
 const AllBookings = () => {
     const [searchBy, setSearchBy] = useState("user");
@@ -70,10 +71,16 @@ const AllBookings = () => {
         return transformBookings;
     }
 
+    const handleCopy = (data) => {
+        copy(data);
+        toast.success(`copied ${data}`)
+    }
+
     // console.log(bookings);
     return (
         <div>
-            <div className='flex justify-end'>
+            <div className='md:flex items-center justify-between'>
+                <h2 className='pb-6 text-2xl'>All Bookings</h2>
                 <div>
                     <div>
                         <select onClick={(e) => setSearchBy(e.target.value)} className="select select-bordered select-xs w-full max-w-xs">
@@ -131,7 +138,7 @@ const AllBookings = () => {
                                                     <div className='mt-4 flex flex-col gap-3'>
                                                         <div className='flex items-center'>
                                                             <TbCurrencyTaka />
-                                                            <span className='text-lg font-bold'>{booking.price}</span>
+                                                            <span onClick={() => handleCopy(booking?.price)} className='text-lg font-bold cursor-copy'>{booking.price}</span>
                                                         </div>
                                                         <div className='flex items-center gap-4'>
                                                             <HiOutlineMail size={22} />
@@ -163,6 +170,14 @@ const AllBookings = () => {
 
                                                     </div>
                                                     <div className='mt-4 flex flex-col gap-3'>
+                                                        <div>
+                                                            <h2
+                                                                onClick={() => handleCopy(booking?._id)}
+                                                                className="cursor-copy"
+                                                            >
+                                                                Booking Id: {booking._id}
+                                                            </h2>
+                                                        </div>
                                                         <div className='flex items-center gap-4'>
                                                             <HiOutlineMail size={22} />
                                                             <a href={`mailto:${booking.email}`}>{booking.email}</a>
@@ -213,10 +228,8 @@ const AllBookings = () => {
                         }
 
                     </tbody>
-
                 </table>
             </div>
-            {/* <ConfirmationModal /> */}
         </div>
     );
 };
