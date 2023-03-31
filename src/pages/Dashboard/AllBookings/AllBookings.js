@@ -11,13 +11,17 @@ import { useState } from 'react';
 import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-const copy = require('clipboard-copy')
+import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
+const copy = require('clipboard-copy');
 
 const AllBookings = () => {
     const [searchBy, setSearchBy] = useState("user");
     const [searchingValue, setSearchingValue] = useState("");
+    const [page, setPage] = useState(1);
 
-    const { data: bookings, isLoading, refetch } = useQuery({
+    const numberOfElementPerPage = 2;
+
+    const { data: bookings = [], isLoading, refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await fetch('http://localhost:5000/bookings', {
@@ -29,6 +33,8 @@ const AllBookings = () => {
             return data;
         }
     });
+
+    // console.log(bookings)
 
     if (isLoading) {
         return <Loading />
@@ -45,7 +51,10 @@ const AllBookings = () => {
             .then((willDelete) => {
                 if (willDelete) {
                     fetch(`http://localhost:5000/booking/${id}`, {
-                        method: "DELETE"
+                        method: "DELETE",
+                        // headers: {
+                        //     authorization: `bearer ${localStorage.getItem('accessToken')}`
+                        // }
                     })
                         .then(res => res.json())
                         .then(data => {
@@ -63,13 +72,17 @@ const AllBookings = () => {
     }
 
     const searchBooking = () => {
-        let transformBookings = bookings;
+        let transformBookings = bookings || [];
+
+        if(searchBy === ""){
+            return toast.error("Please, select type(searching method)");
+        }
 
         if (searchBy === 'user') {
-            transformBookings = transformBookings.filter(booking => booking.name.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
+            transformBookings = transformBookings?.filter(booking => booking.name.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
         if (searchBy === 'hall') {
-            transformBookings = transformBookings.filter(booking => booking.hotelName.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
+            transformBookings = transformBookings?.filter(booking => booking.hotelName.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
 
         return transformBookings;
@@ -80,15 +93,26 @@ const AllBookings = () => {
         toast.success(`copied ${data}`)
     }
 
+    const selectPageHandler = (selectedPage) => {
+        if (selectedPage >= 1 && selectedPage <= Math.ceil(searchBooking()?.length / numberOfElementPerPage))
+            setPage(selectedPage);
+    }
+
     // console.log(bookings);
     return (
         <div>
             <div className='md:flex items-center justify-between'>
-                <h2 className='pb-6 text-2xl'>All Bookings</h2>
+                <h2 className='pb-6 text-2xl'>
+                    All Bookings
+                    {
+                        bookings.length > 0 &&
+                        <span className='text-sm ml-3'>[{bookings.length} founds]</span>
+                    }
+                </h2>
                 <div>
                     <div>
                         <select onClick={(e) => setSearchBy(e.target.value)} className="select select-bordered select-xs w-full max-w-xs">
-                            <option disabled selected>Search By</option>
+                            <option disabled selected value="user">Search By</option>
                             <option value="user">User</option>
                             <option value="hall">Hall</option>
                         </select>
@@ -118,10 +142,10 @@ const AllBookings = () => {
                     </thead>
                     <tbody>
                         {
-                            searchBooking().length > 0 ?
+                            searchBooking()?.length > 0 ?
                                 <>
                                     {
-                                        searchBooking().map(booking => <tr key={booking?._id}>
+                                        searchBooking()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
                                             <td>
                                                 <div>
                                                     <div className="flex items-center space-x-3">
@@ -230,10 +254,38 @@ const AllBookings = () => {
                                     }
                                 </> : <p className='text-center'>There is no booking yet</p>
                         }
-
                     </tbody>
                 </table>
             </div>
+            {
+                searchBooking()?.length > 0 && <div className='flex justify-center py-5'>
+                    <div className="btn-group">
+                        <button
+                            onClick={() => selectPageHandler(page - 1)}
+                            className="btn btn-sm btn-outline btn-accent"
+                        >
+                            <MdOutlineArrowBackIos size={20} />
+                        </button>
+                        {
+                            [...Array(Math.ceil(searchBooking()?.length / numberOfElementPerPage))]?.map((_, i) => {
+                                return <button
+                                    key={i}
+                                    onClick={() => selectPageHandler(i + 1)}
+                                    className={`btn btn-sm btn-outline btn-accent ${page === i + 1 ? "btn-active" : ""}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            })
+                        }
+                        <button
+                            onClick={() => selectPageHandler(page + 1)}
+                            className="btn btn-sm btn-outline btn-accent"
+                        >
+                            <MdOutlineArrowForwardIos size={20} />
+                        </button>
+                    </div>
+                </div>
+            }
         </div>
     );
 };

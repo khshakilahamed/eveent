@@ -8,14 +8,18 @@ import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
 import BookingModal from '../BookingModal/BookingModal';
+import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
 
 const ExploreAll = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
     const [sortQuery, setSortQuery] = useState("");
     const [searchItem, setSearchItem] = useState("");
     const [hotelDetails, setHotelDetails] = useState(null);
+    const [page, setPage] = useState(1);
     const { user } = useAuth();
     const navigate = useNavigate();
+
+    const numberOfElementPerPage = 3;
 
 
 
@@ -83,6 +87,22 @@ const ExploreAll = () => {
         return sortedItems;
     }
 
+    const selectPageHandler = (selectedPage) => {
+        if (selectedPage >= 1 && selectedPage <= Math.ceil(transFormItems()?.length / numberOfElementPerPage))
+            setPage(selectedPage)
+    }
+
+    // const handlePrevPage = (selectedPage) => {
+    //     if (selectedPage >= 1) {
+    //         setPage(selectedPage);
+    //     }
+    // }
+    // const handleNextPage = (selectedPage) => {
+    //     if (selectedPage <= transFormItems().length) {
+    //         setPage(selectedPage);
+    //     }
+    // }
+
 
     return (
         <div className='max-w-[1400px] px-10 sm:px-20 mx-auto my-14'>
@@ -102,13 +122,44 @@ const ExploreAll = () => {
                     <SortSection setSortQuery={setSortQuery} total={hotels.length} />
                     <div>
                         {
-                            transFormItems().map(hotel => (
+                            transFormItems()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage)?.map(hotel => (
                                 <SearchProducts hotel={hotel} setHotelDetails={setHotelDetails} />
                             ))
                         }
                     </div>
                     {/* <SearchProducts /> */}
                 </div>
+
+                {/* <button className="btn btn-md btn-outline btn-active">2</button> */}
+                {
+                    transFormItems()?.length > 0 && <div className='flex justify-center py-5'>
+                        <div className="btn-group">
+                            <button
+                                onClick={() => selectPageHandler(page - 1)}
+                                className="btn btn-sm btn-outline btn-accent"
+                            >
+                                <MdOutlineArrowBackIos size={20}/>
+                            </button>
+                            {
+                                [...Array(Math.ceil(transFormItems()?.length / numberOfElementPerPage))]?.map((_, i) => {
+                                    return <button
+                                        key={i}
+                                        onClick={() => selectPageHandler(i + 1)}
+                                        className={`btn btn-sm btn-outline btn-accent ${page === i + 1 ? "btn-active" : ""}`}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                })
+                            }
+                            <button
+                                onClick={() => selectPageHandler(page + 1)}
+                                className="btn btn-sm btn-outline btn-accent"
+                            >
+                                <MdOutlineArrowForwardIos size={20}/>
+                            </button>
+                        </div>
+                    </div>
+                }
             </div>
             {
                 // hotelDetails && <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />

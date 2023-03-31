@@ -19,11 +19,14 @@ import UserSpecification from "../../pages/UserSpecification/UserSpecification";
 import AdminRoute from "../AdminRoute/AdminRoute";
 import HotelAdmin from "../HotelAdmin/HotelAdmin";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import ManageHalls from "../../pages/Dashboard/ManageHalls/ManageHalls";
+import ErrorPage from "../../pages/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Main></Main>,
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/',
@@ -67,6 +70,7 @@ const router = createBrowserRouter([
     {
         path: '/dashboard',
         element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: '/dashboard',
@@ -91,6 +95,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/allBookings',
                 element: <AdminRoute><AllBookings /></AdminRoute>
+            },
+            {
+                path: '/dashboard/manageHalls',
+                element: <AdminRoute><ManageHalls /></AdminRoute>
             },
         ]
     }

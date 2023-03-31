@@ -12,7 +12,7 @@ import useAuth from '../../../hooks/useAuth';
 const MyHotelBookings = () => {
     const { user } = useAuth();
 
-    const { data: bookings, isLoading } = useQuery({
+    const { data: bookings = [], isLoading } = useQuery({
         queryKey: [user?.email],
         queryFn: async () => {
             const res = await fetch(`http://localhost:5000/hotel/bookings/${user?.email}`, {

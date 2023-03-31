@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import { RiUploadCloudFill } from 'react-icons/ri';
 import { CiCircleRemove } from 'react-icons/ci';
+import { format } from 'date-fns';
 
 const AsHotelAdmin = () => {
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
@@ -25,11 +26,13 @@ const AsHotelAdmin = () => {
     const [addTermsNConditions, setAddTermsNConditions] = useState('');
     const [profileImg, setProfileImg] = useState({});
     const [extraImages, setExtraImages] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
 
     const [uploadProfileImg, setUploadProfileImg] = useState({});
     const [uploadExtraImages, setUploadExtraImages] = useState([]);
 
     const handleUpdateUser = data => {
+        setIsUploading(true);
         const role = 'hotelAdmin';
         if (services.length < 3) {
             return toast.error("Please, add at least three services");
@@ -43,15 +46,15 @@ const AsHotelAdmin = () => {
             termsCondition: termsNConditions,
         };
 
-        console.log(uploadExtraImages.length);
+        // console.log(uploadExtraImages.length);
 
-        fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${process.env.REACT_APP_imgBB_key}`, {
+        fetch(`https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_imgBB_key}`, {
             method: "POST",
             body: uploadProfileImg
         })
             .then(res => res.json())
             .then(imgData => {
-                console.log(imgData.data.url);
+                // console.log(imgData.data.url);
                 userInfo = { ...userInfo, profileImg: imgData?.data?.url }
                 // console.log(userInfo);
 
@@ -59,19 +62,19 @@ const AsHotelAdmin = () => {
 
                 uploadExtraImages.map(image => (
                     APIarray.push(
-                        fetch(`https://api.imgbb.com/1/upload?expiration=600&key=${process.env.REACT_APP_imgBB_key}`, {
+                        fetch(`https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_imgBB_key}`, {
                             method: "POST",
                             body: image
                         })
                             .then(res => res.json())
                             .then(iData => {
-                                console.log(iData);
+                                // console.log(iData);
                                 return iData.data.url
                             })
                     )
                 ));
 
-                console.log(Promise.all(APIarray).then(res => {
+                Promise.all(APIarray).then(res => {
                     userInfo = { ...userInfo, images: res };
                     const { name, email, district, division, upazila, address, phone, role, ...others } = userInfo;
                     const userUpdateInfo = {
@@ -90,8 +93,9 @@ const AsHotelAdmin = () => {
                         phone,
                         location: `${address}, ${district}, ${division}`,
                         rating: 0,
+                        createdAt: format(new Date(), 'PPpp')
                     }
-                    
+
                     fetch(`http://localhost:5000/user?email=${user?.email}`, {
                         method: 'PUT',
                         headers: {
@@ -103,11 +107,11 @@ const AsHotelAdmin = () => {
                         .then(data => {
                             if (data.modifiedCount) {
                                 toast.success(`You started as an ${role}`);
-                                navigate('/');
-                                reset();
+                                setIsUploading(false);
                             }
                         })
 
+                    setIsUploading(true);
                     fetch("http://localhost:5000/hotels", {
                         method: 'POST',
                         headers: {
@@ -118,11 +122,15 @@ const AsHotelAdmin = () => {
                         .then(res => res.json())
                         .then(data => {
                             if (data.acknowledged) {
+                                navigate('/');
+                                reset();
+                                setIsUploading(false);
+                                window.location.reload(true);
                             }
                         })
                     // console.log(hotelInfo);
                     // console.log(userUpdateInfo);
-                }));
+                });
             })
     };
 
@@ -382,7 +390,7 @@ const AsHotelAdmin = () => {
                             {errors.district && <p role="alert" className='text-red-500'>{errors.district?.message}</p>}
                             {
                                 upazilas[0] && <select name="" id="" className=" p-2 w-96 border outline-none"
-                                    {...register("upazila", { required: "Upazila is required" })}
+                                    {...register("upazila")}
                                 >
                                     <option value="" disabled selected>Select Upazila</option>
                                     {
@@ -390,7 +398,7 @@ const AsHotelAdmin = () => {
                                     }
                                 </select>
                             }
-                            {errors.upazila && <p role="alert" className='text-red-500'>{errors.upazila?.message}</p>}
+                            {/* {errors.upazila && <p role="alert" className='text-red-500'>{errors.upazila?.message}</p>} */}
                             <input
                                 placeholder='Enter your address'
                                 className=" p-2 w-96 border outline-none"
@@ -486,7 +494,11 @@ const AsHotelAdmin = () => {
                             </div>
 
 
-                            <input className='btn btn-accent' type="submit" value="Submit" />
+                            <input
+                                className='btn btn-accent'
+                                type="submit" value={isUploading ? "Updating..." : "Submit"}
+                                disabled={isUploading}
+                            />
                         </form>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png';
 import { FaUserAlt } from 'react-icons/fa';
@@ -7,8 +7,9 @@ import useUser from '../../../hooks/useUser';
 import Loading from '../Loading/Loading';
 
 const Navbar = () => {
-    const { user, role, signOutUser, loading } = useAuth();
+    const { user, signOutUser, loading } = useAuth();
     const [userInfo] = useUser();
+    const navigate = useNavigate();
 
     // if(loading){
     //     return <Loading/>
@@ -21,9 +22,12 @@ const Navbar = () => {
         <li><Link to="/exploreAll">Explore All</Link></li>
         <li><Link to="/dashboard">Dashboard</Link></li>
         {
-            user?.email && userInfo?.role !== 'user' && userInfo?.role !== 'hotelAdmin' && userInfo.role!=='admin' && <>
+            user?.email && !userInfo?.role && <>
                 <li><Link to="/userSpecification"><button className="btn btn-success">Getting Started</button></Link></li>
             </>
+            // user?.email && userInfo?.role !== 'user' && userInfo?.role !== 'hotelAdmin' && userInfo.role !== 'admin' && <>
+            //     <li><Link to="/userSpecification"><button className="btn btn-success">Getting Started</button></Link></li>
+            // </>
         }
         {
             user && user?.email && <>
@@ -39,7 +43,7 @@ const Navbar = () => {
                         <li><a href="#">Name: {user?.displayName}</a></li>
                         <li><Link to="/dashboard/myProfile">Profile</Link></li>
                         <li>
-                            <button onClick={signOutUser} className="justify-between">
+                            <button onClick={() => signOutUser(navigate)} className="justify-between">
                                 Sign Out
                             </button>
                         </li>

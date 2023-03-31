@@ -24,7 +24,7 @@ const DashboardLayout = () => {
                         <ul className="menu p-4 w-80 bg-base-100 text-black">
                             <li><Link to="/dashboard/myProfile">My Profile</Link></li>
                             {
-                                userInfo.email === user.email && userInfo.role !== 'admin' && userInfo.role !== 'hotelAdmin' && <>
+                                userInfo?.email === user.email && userInfo?.role === 'user' && userInfo?.role !== 'admin' && userInfo?.role !== 'hotelAdmin' && <>
                                     <li><Link to="/dashboard/myBookings">My Bookings</Link></li>
                                 </>
                             }
@@ -37,6 +37,7 @@ const DashboardLayout = () => {
                                 (user.email === userInfo.email && userInfo.role === 'admin') && <>
                                     <li><Link to="/dashboard/allUsers">All Users</Link></li>
                                     <li><Link to="/dashboard/allBookings">All Bookings</Link></li>
+                                    <li><Link to="/dashboard/manageHalls">Manage Halls</Link></li>
 
                                 </>
                             }

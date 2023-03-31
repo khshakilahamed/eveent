@@ -21,8 +21,8 @@ const SearchProducts = ({ hotel, setHotelDetails }) => {
                             <Link to={`/details/${_id}`}>
                                 <span className='font-bold text-xl hover:underline'>{name}</span>
                             </Link>
-                            <p className='flex items-center'>
-                                <GoLocation className='text-accent' />
+                            <p className='flex items-center gap-3'>
+                                <GoLocation className='text-accent' size={26}/>
                                 <span className='font-thin'>{location}</span>
                             </p>
                             <h3 className='mt-5 font-bold'>Capacity-{capacity} Person</h3>

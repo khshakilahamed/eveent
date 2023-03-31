@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import initializeFirebase from '../firebase/firebase.init';
 import useToken from "./useToken";
+import { format } from "date-fns";
 
 initializeFirebase();
 
@@ -98,13 +99,14 @@ const useFirebase = () => {
             })
     }
 
-    const signOutUser = () => {
+    const signOutUser = (navigate) => {
         setLoading(true);
         signOut(auth)
             .then(() => {
                 setUser("");
                 setError("");
                 setLoading(false);
+                navigate('/');
             })
             .catch((error) => {
                 setError(error.message);
@@ -116,7 +118,8 @@ const useFirebase = () => {
         const userInfo = {
             name,
             email,
-            phone
+            phone,
+            userCreatedAt: format(new Date(), 'PPpp')
         };
 
         fetch("http://localhost:5000/users", {
@@ -138,7 +141,8 @@ const useFirebase = () => {
         const userInfo = {
             name,
             email,
-            photoURL
+            photoURL,
+            userCreatedAt: format(new Date(), 'PPpp'),
         };
 
         fetch("http://localhost:5000/users", {
@@ -165,6 +169,8 @@ const useFirebase = () => {
                 if (data.accessToken) {
                     localStorage.setItem('accessToken', data.accessToken);
                     from ? navigate(from, { replace: true }) : navigate('/');
+
+                    // window.location.reload(true);
                 }
             })
     }

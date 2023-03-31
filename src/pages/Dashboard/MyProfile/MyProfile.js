@@ -8,7 +8,7 @@ import useUser from '../../../hooks/useUser';
 const MyProfile = () => {
     const { user } = useAuth();
 
-    const { data: userInfo, isLoading } = useQuery({
+    const { data: userInfo = [], isLoading } = useQuery({
         queryKey: [user],
         queryFn: async () => {
             const res = await fetch(`http://localhost:5000/user/${user?.email}`);

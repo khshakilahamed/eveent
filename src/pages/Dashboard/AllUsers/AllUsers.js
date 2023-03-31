@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import swal from 'sweetalert';
 import Loading from '../../../components/shared/Loading/Loading';
 import useUser from '../../../hooks/useUser';
 
 const AllUsers = () => {
-    const { data: users, isLoading, refetch } = useQuery({
+    const { data: users = [], isLoading, refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const res = await fetch('http://localhost:5000/users', {
@@ -81,7 +81,7 @@ const AllUsers = () => {
                     </thead>
                     <tbody>
                         {
-                            users.map(user => <tr key={user?._id}>
+                            users?.map(user => <tr key={user?._id}>
                                 <td>
                                     <div className="flex items-center space-x-3">
                                         <div className="avatar">
