@@ -20,7 +20,11 @@ const AllBookings = () => {
     const { data: bookings, isLoading, refetch } = useQuery({
         queryKey: ['users'],
         queryFn: async () => {
-            const res = await fetch('http://localhost:5000/bookings')
+            const res = await fetch('http://localhost:5000/bookings', {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem('accessToken')}`
+                }
+            })
             const data = await res.json();
             return data;
         }

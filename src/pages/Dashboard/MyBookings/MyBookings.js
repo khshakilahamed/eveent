@@ -12,9 +12,13 @@ import { HiOutlineMail } from 'react-icons/hi';
 const MyBookings = () => {
     const { user } = useAuth();
     const { data: bookings, isLoading, } = useQuery({
-        queryKey: [user],
+        queryKey: ["bookings", user],
         queryFn: async () => {
-            const res = await fetch(`http://localhost:5000/bookings/${user?.email}`)
+            const res = await fetch(`http://localhost:5000/bookings/${user?.email}`, {
+                headers: {
+                    authorization: `bearer ${localStorage.getItem('accessToken')}` 
+                }
+            })
             const data = await res.json();
             return data;
         }

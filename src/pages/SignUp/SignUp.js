@@ -17,6 +17,7 @@ const SignUp = () => {
 
     const handleSignUp = (data) => {
         registerUser({ ...data, reset, navigate });
+        // console.log(data)
     }
 
     const handleGoogleSignIn = () => {

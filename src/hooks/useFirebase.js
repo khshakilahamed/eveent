@@ -2,6 +2,7 @@ import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmail
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import initializeFirebase from '../firebase/firebase.init';
+import useToken from "./useToken";
 
 initializeFirebase();
 
@@ -10,6 +11,15 @@ const useFirebase = () => {
     const [error, setError] = useState("");
     const [role, setRole] = useState("");
     const [loading, setLoading] = useState(true);
+    // const [createdUserEmail, setCreatedUserEmail] = useState('');
+    // const [navigate, setNavigate] = useState("");
+
+
+    // const [token] = useToken(createdUserEmail);
+
+    // if (token) {
+    //     navigate()
+    // }
 
 
     const auth = getAuth();
@@ -21,9 +31,13 @@ const useFirebase = () => {
             .then((result) => {
                 setError("");
                 setUser(result.user);
-                updateUserName(name);
-                saveUser({ name, email });
-                navigate('/');
+                const location = '/';
+                updateUserName({ name, email, phone, navigate, location });
+
+                // save user called from updateUserName function
+                // saveUser({ name, email });
+                // navigate('/');
+
                 reset();
                 setLoading(false);
             })
@@ -33,12 +47,13 @@ const useFirebase = () => {
             });
     }
 
-    const updateUserName = (name) => {
+    const updateUserName = ({ name, email, phone, navigate }) => {
         updateProfile(auth.currentUser, {
             displayName: name
         })
             .then((user) => {
                 setError("");
+                saveUser({ name, email, phone, navigate });
             })
             .catch((error) => {
                 setError(error.message);
@@ -50,7 +65,8 @@ const useFirebase = () => {
         signInWithEmailAndPassword(auth, email, password)
             .then((result) => {
                 setUser(result.user);
-                navigate(from, { replace: true });
+                // navigate(from, { replace: true });
+                getUserToken(email, navigate, from);
                 setError("");
                 reset();
                 setLoading(false);
@@ -68,10 +84,11 @@ const useFirebase = () => {
                 const name = result.user.displayName;
                 const email = result.user.email;
                 const photoURL = result.user.photoURL;
+
                 setUser(result.user);
                 navigate(from, { replace: true });
-                toast.success("Successfully logged in");
-                saveGoogleUser({ name, email, photoURL });
+                // toast.success("Successfully logged in");
+                saveGoogleUser({ name, email, photoURL, navigate, from });
                 setError("");
                 setLoading(false);
             })
@@ -95,7 +112,13 @@ const useFirebase = () => {
             })
     }
 
-    const saveUser = (userInfo) => {
+    const saveUser = ({ name, email, phone, navigate }) => {
+        const userInfo = {
+            name,
+            email,
+            phone
+        };
+
         fetch("http://localhost:5000/users", {
             method: "POST",
             headers: {
@@ -106,12 +129,18 @@ const useFirebase = () => {
             .then(res => res.json())
             .then(data => {
                 if (data.acknowledged) {
-                    toast.success("Successfully logged in");
+                    getUserToken(email, navigate)
                 }
             })
     }
 
-    const saveGoogleUser = (userInfo) => {
+    const saveGoogleUser = ({ name, email, photoURL, navigate, from }) => {
+        const userInfo = {
+            name,
+            email,
+            photoURL
+        };
+
         fetch("http://localhost:5000/users", {
             method: "PUT",
             headers: {
@@ -121,10 +150,22 @@ const useFirebase = () => {
         })
             .then(res => res.json())
             .then(data => {
-                // if (data.acknowledged) {
-                //     console.log(data);
-                //     toast.success("Successfully logged in");
-                // }
+                if (data.acknowledged) {
+                    getUserToken(email, navigate, from);
+                    // console.log(data);
+                    // toast.success("Successfully logged in");
+                }
+            })
+    }
+
+    const getUserToken = (email, navigate, from) => {
+        fetch(`http://localhost:5000/jwt?email=${email}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.accessToken) {
+                    localStorage.setItem('accessToken', data.accessToken);
+                    from ? navigate(from, { replace: true }) : navigate('/');
+                }
             })
     }
 

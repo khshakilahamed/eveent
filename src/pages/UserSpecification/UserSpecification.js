@@ -1,10 +1,22 @@
 import React from 'react';
 import asUser from './../../assets/Images/user-specification/user.png';
 import asHotelAdministrator from './../../assets/Images/user-specification/administrator.png';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import useUser from '../../hooks/useUser';
+import Loading from '../../components/shared/Loading/Loading';
 
 const UserSpecification = () => {
     const navigate = useNavigate();
+    const [userInfo, userInfoLoading] = useUser();
+    const location = useLocation();
+
+    if (userInfoLoading) {
+        return <Loading />
+    }
+
+    if (userInfo?.role === 'user' || userInfo?.role === 'hotelAdmin') {
+        return <Navigate to='/' state={{ from: location }} replace></Navigate>
+    }
 
     return (
         <div className='max-w-[1400px] px-10 sm:px-20 mx-auto my-14'>
