@@ -76,9 +76,10 @@ const AsHotelAdmin = () => {
 
                 Promise.all(APIarray).then(res => {
                     userInfo = { ...userInfo, images: res };
-                    const { name, email, district, division, upazila, address, phone, role, ...others } = userInfo;
+                    const { name, email, district, division, upazila, address, phone, profileImg, role, ...others } = userInfo;
                     const userUpdateInfo = {
                         name,
+                        photoURL: profileImg,
                         address,
                         district,
                         division,
@@ -88,6 +89,7 @@ const AsHotelAdmin = () => {
                     }
                     const hotelInfo = {
                         ...others,
+                        profileImg,
                         email,
                         name,
                         phone,

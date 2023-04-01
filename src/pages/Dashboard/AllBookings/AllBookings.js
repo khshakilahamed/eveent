@@ -144,10 +144,10 @@ const AllBookings = () => {
                     </thead>
                     <tbody>
                         {
-                            searchBooking()?.length > 0 ?
+                            bookings.length > 0 && searchBooking()?.length > 0 ?
                                 <>
                                     {
-                                        searchBooking()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
+                                       searchBooking()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
                                             <td>
                                                 <div>
                                                     <div className="flex items-center space-x-3">

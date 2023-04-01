@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import swal from 'sweetalert';
 import Loading from '../../../components/shared/Loading/Loading';
-import useUser from '../../../hooks/useUser';
-import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
 import Pagination from '../../../components/shared/Pagination/Pagination';
 import { RiDeleteBin6Line } from 'react-icons/ri';
+import useAuth from '../../../hooks/useAuth';
 
 const AllUsers = () => {
     const [page, setPage] = useState(1);
@@ -26,6 +25,10 @@ const AllUsers = () => {
             return data;
         }
     });
+
+    if (isLoading) {
+        return <Loading />
+    }
 
     const handleMakeAdmin = (id, email) => {
         swal({
@@ -73,9 +76,7 @@ const AllUsers = () => {
             setPage(selectedPage);
     }
 
-    if (isLoading) {
-        return <Loading />
-    }
+
 
     return (
         <div>
@@ -119,7 +120,7 @@ const AllUsers = () => {
                     </thead>
                     <tbody>
                         {
-                            searchUsers().length > 0 && (
+                            users.length > 0 && searchUsers().length > 0 && (
                                 searchUsers()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(user => <tr key={user?._id}>
                                     <td>
                                         <div className="flex items-center space-x-3">
@@ -146,12 +147,13 @@ const AllUsers = () => {
                                     </td>
                                     <th>
                                         <div className='flex flex-col gap-3'>
-                                            <div className='text-center'>
+                                            {/* <div className='text-center'>
                                                 <button
+                                                    onClick={() => handleDeleteUser(user?._id, user?.email)}
                                                     className='btn btn-error btn-outline btn-sm'>
                                                     <RiDeleteBin6Line size={22} />
                                                 </button>
-                                            </div>
+                                            </div> */}
                                             <button onClick={() => handleMakeAdmin(user?._id, user?.email)} className="btn btn-accent btn-xs">Make Admin</button>
                                         </div>
                                     </th>

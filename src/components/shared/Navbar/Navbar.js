@@ -43,7 +43,9 @@ const Navbar = () => {
                         <li><a href="#">Name: {user?.displayName}</a></li>
                         <li><Link to="/dashboard/myProfile">Profile</Link></li>
                         <li>
-                            <button onClick={() => signOutUser(navigate)} className="justify-between">
+                            <button
+                                onClick={() => signOutUser(navigate)}
+                                className="btn btn-outline btn-accent w-full text-center">
                                 Sign Out
                             </button>
                         </li>

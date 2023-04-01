@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updatePassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updatePassword, deleteUser } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import initializeFirebase from '../firebase/firebase.init';
@@ -138,6 +138,7 @@ const useFirebase = () => {
                 setError(error.message);
             })
     }
+
 
     const saveUser = ({ name, email, phone, navigate }) => {
         const userInfo = {
