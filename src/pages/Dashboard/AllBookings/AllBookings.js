@@ -11,11 +11,11 @@ import { useState } from 'react';
 import swal from 'sweetalert';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
+import Pagination from '../../../components/shared/Pagination/Pagination';
 const copy = require('clipboard-copy');
 
 const AllBookings = () => {
-    const [searchBy, setSearchBy] = useState("user");
+    const [searchBy, setSearchBy] = useState("User Name");
     const [searchingValue, setSearchingValue] = useState("");
     const [page, setPage] = useState(1);
 
@@ -74,14 +74,14 @@ const AllBookings = () => {
     const searchBooking = () => {
         let transformBookings = bookings || [];
 
-        if(searchBy === ""){
+        if (searchBy === "") {
             return toast.error("Please, select type(searching method)");
         }
 
-        if (searchBy === 'user') {
+        if (searchBy === 'User Name') {
             transformBookings = transformBookings?.filter(booking => booking.name.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
-        if (searchBy === 'hall') {
+        if (searchBy === 'Hall Name') {
             transformBookings = transformBookings?.filter(booking => booking.hotelName.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
 
@@ -112,16 +112,18 @@ const AllBookings = () => {
                 <div>
                     <div>
                         <select onClick={(e) => setSearchBy(e.target.value)} className="select select-bordered select-xs w-full max-w-xs">
-                            <option disabled selected value="user">Search By</option>
-                            <option value="user">User</option>
-                            <option value="hall">Hall</option>
+                            <option disabled selected value="User Name">Search By</option>
+                            <option value="User Name">User Name</option>
+                            <option value="Hall Name">Hall Name</option>
                         </select>
                     </div>
                     <div className="form-control">
                         <div className="input-group">
                             <input
                                 onChange={(e) => setSearchingValue(e.target.value)}
-                                type="text" placeholder="Search…" className="input input-bordered"
+                                type="text"
+                                placeholder={`search by ${searchBy}`}
+                                className="input input-bordered"
                             />
                             <button onClick={searchBooking} className="btn btn-square">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -257,35 +259,13 @@ const AllBookings = () => {
                     </tbody>
                 </table>
             </div>
-            {
-                searchBooking()?.length > 0 && <div className='flex justify-center py-5'>
-                    <div className="btn-group">
-                        <button
-                            onClick={() => selectPageHandler(page - 1)}
-                            className="btn btn-sm btn-outline btn-accent"
-                        >
-                            <MdOutlineArrowBackIos size={20} />
-                        </button>
-                        {
-                            [...Array(Math.ceil(searchBooking()?.length / numberOfElementPerPage))]?.map((_, i) => {
-                                return <button
-                                    key={i}
-                                    onClick={() => selectPageHandler(i + 1)}
-                                    className={`btn btn-sm btn-outline btn-accent ${page === i + 1 ? "btn-active" : ""}`}
-                                >
-                                    {i + 1}
-                                </button>
-                            })
-                        }
-                        <button
-                            onClick={() => selectPageHandler(page + 1)}
-                            className="btn btn-sm btn-outline btn-accent"
-                        >
-                            <MdOutlineArrowForwardIos size={20} />
-                        </button>
-                    </div>
-                </div>
-            }
+
+            <Pagination
+                collectionArray={searchBooking()}
+                selectPageHandler={selectPageHandler}
+                page={page}
+                numberOfElementPerPage={numberOfElementPerPage}
+            />
         </div>
     );
 };

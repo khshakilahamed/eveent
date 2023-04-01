@@ -8,9 +8,16 @@ import { TbCurrencyTaka } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import Loading from '../../../components/shared/Loading/Loading';
 import useAuth from '../../../hooks/useAuth';
+import Pagination from '../../../components/shared/Pagination/Pagination';
+import { useState } from 'react';
 
 const MyHotelBookings = () => {
     const { user } = useAuth();
+    const [searchingValue, setSearchingValue] = useState("");
+    const [page, setPage] = useState(1);
+
+    const numberOfElementPerPage = 5;
+
 
     const { data: bookings = [], isLoading } = useQuery({
         queryKey: [user?.email],
@@ -29,12 +36,44 @@ const MyHotelBookings = () => {
         return <Loading />
     }
 
+    const searchBookings = () => {
+        let transformHotels = bookings || [];
+        transformHotels = transformHotels.filter(booking => booking.name.toLowerCase().includes(searchingValue.toLowerCase()));
+
+        return transformHotels;
+    }
+
+    const selectPageHandler = (selectedPage) => {
+        if (selectedPage >= 1 && selectedPage <= Math.ceil(searchBookings()?.length / numberOfElementPerPage))
+            setPage(selectedPage)
+    }
 
 
     return (
         <div>
             <div className="overflow-x-auto w-full mt-10">
-                <h2 className='pb-6 text-2xl'>Hotel Bookings</h2>
+                <div className='md:flex items-center justify-between'>
+                    <h2 className='pb-6 text-2xl'>
+                        Hotel Bookings
+                        {
+                            bookings?.length > 0 &&
+                            <span className='text-sm ml-3'>[{bookings?.length} founds]</span>
+                        }
+                    </h2>
+                    <div>
+                        <div className="form-control">
+                            <div className="input-group">
+                                <input
+                                    onChange={(e) => setSearchingValue(e.target.value)}
+                                    type="text" placeholder="Search by customer name" className="input input-bordered"
+                                />
+                                <button onClick={searchBookings} className="btn btn-square">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <table className="table w-full">
                     <thead className='bg-slate-900 text-white'>
                         <tr>
@@ -49,9 +88,9 @@ const MyHotelBookings = () => {
                     </thead>
                     <tbody>
                         {
-                            bookings?.length > 0 ? <>
+                            searchBookings()?.length > 0 ? <>
                                 {
-                                    bookings.map(booking => <tr key={booking?._id}>
+                                    searchBookings().slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
                                         <td>
                                             <div className="flex items-center space-x-3">
                                                 <div className="avatar">
@@ -110,6 +149,12 @@ const MyHotelBookings = () => {
                     </tbody>
 
                 </table>
+                <Pagination
+                    collectionArray={searchBookings()}
+                    selectPageHandler={selectPageHandler}
+                    page={page}
+                    numberOfElementPerPage={numberOfElementPerPage}
+                />
             </div>
         </div>
     );

@@ -21,6 +21,7 @@ import HotelAdmin from "../HotelAdmin/HotelAdmin";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import ManageHalls from "../../pages/Dashboard/ManageHalls/ManageHalls";
 import ErrorPage from "../../pages/ErrorPage/ErrorPage";
+import ForgotPassword from "../../pages/ForgotPassword/ForgotPassword";
 
 const router = createBrowserRouter([
     {
@@ -64,6 +65,10 @@ const router = createBrowserRouter([
             {
                 path: '/asHotelAdmin',
                 element: <AsHotelAdmin />
+            },
+            {
+                path: '/forgotPassword',
+                element: <ForgotPassword />
             },
         ]
     },

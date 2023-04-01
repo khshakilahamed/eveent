@@ -68,6 +68,9 @@ const Login = () => {
                             </div>
                         </div>
                     }
+                    <p>
+                        <Link to="/forgotPassword"><small className='text-accent'>Forgot Password?</small></Link>
+                    </p>
                     <div className='mt-5 text-center w-96'>
                         <input className='btn w-full bg-accent text-white' type="submit" value="Login" />
                     </div>

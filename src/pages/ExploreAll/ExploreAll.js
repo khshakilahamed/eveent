@@ -9,6 +9,7 @@ import Loading from '../../components/shared/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
 import BookingModal from '../BookingModal/BookingModal';
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
+import Pagination from '../../components/shared/Pagination/Pagination';
 
 const ExploreAll = () => {
     const { register, formState: { errors }, handleSubmit } = useForm();
@@ -92,17 +93,6 @@ const ExploreAll = () => {
             setPage(selectedPage)
     }
 
-    // const handlePrevPage = (selectedPage) => {
-    //     if (selectedPage >= 1) {
-    //         setPage(selectedPage);
-    //     }
-    // }
-    // const handleNextPage = (selectedPage) => {
-    //     if (selectedPage <= transFormItems().length) {
-    //         setPage(selectedPage);
-    //     }
-    // }
-
 
     return (
         <div className='max-w-[1400px] px-10 sm:px-20 mx-auto my-14'>
@@ -130,39 +120,14 @@ const ExploreAll = () => {
                     {/* <SearchProducts /> */}
                 </div>
 
-                {/* <button className="btn btn-md btn-outline btn-active">2</button> */}
-                {
-                    transFormItems()?.length > 0 && <div className='flex justify-center py-5'>
-                        <div className="btn-group">
-                            <button
-                                onClick={() => selectPageHandler(page - 1)}
-                                className="btn btn-sm btn-outline btn-accent"
-                            >
-                                <MdOutlineArrowBackIos size={20}/>
-                            </button>
-                            {
-                                [...Array(Math.ceil(transFormItems()?.length / numberOfElementPerPage))]?.map((_, i) => {
-                                    return <button
-                                        key={i}
-                                        onClick={() => selectPageHandler(i + 1)}
-                                        className={`btn btn-sm btn-outline btn-accent ${page === i + 1 ? "btn-active" : ""}`}
-                                    >
-                                        {i + 1}
-                                    </button>
-                                })
-                            }
-                            <button
-                                onClick={() => selectPageHandler(page + 1)}
-                                className="btn btn-sm btn-outline btn-accent"
-                            >
-                                <MdOutlineArrowForwardIos size={20}/>
-                            </button>
-                        </div>
-                    </div>
-                }
+                <Pagination
+                    collectionArray={transFormItems()}
+                    selectPageHandler={selectPageHandler}
+                    page={page}
+                    numberOfElementPerPage={numberOfElementPerPage}
+                />
             </div>
             {
-                // hotelDetails && <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
                 hotelDetails && (
                     !userInfo?.role ? navigate('/userSpecification') : <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
                 )

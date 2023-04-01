@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updatePassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import initializeFirebase from '../firebase/firebase.init';
@@ -114,6 +114,31 @@ const useFirebase = () => {
             })
     }
 
+    const changePassword = ({ password, setIsChangePass, reset }) => {
+        updatePassword(user, password)
+            .then(() => {
+                setIsChangePass(false);
+                toast.success("Successfully changed password");
+                reset();
+            })
+            .catch((error) => {
+                setError(error.message);
+            })
+    }
+
+    const forgotPassword = ({ email, reset, navigate }) => {
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                setError("");
+                toast.success("The reset link sent to your email");
+                reset();
+                navigate('/login');
+            })
+            .catch((error) => {
+                setError(error.message);
+            })
+    }
+
     const saveUser = ({ name, email, phone, navigate }) => {
         const userInfo = {
             name,
@@ -206,6 +231,8 @@ const useFirebase = () => {
         signIn,
         signInWithGoogle,
         signOutUser,
+        changePassword,
+        forgotPassword,
     };
 };
 
