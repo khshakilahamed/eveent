@@ -44,8 +44,8 @@ const HotelDetails = () => {
                     <PhotoProvider>
                         {
                             images.slice(0, 4).map((image, i) =>
-                                <PhotoView src={image}>
-                                    <img key={i} className="w-full mb-4 cursor-pointer" src={image} alt="" />
+                                <PhotoView  key={i} src={image}>
+                                    <img className="w-full mb-4 cursor-pointer" src={image} alt="" />
                                 </PhotoView>
                             )
                         }

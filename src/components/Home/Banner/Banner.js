@@ -10,42 +10,24 @@ import { format } from 'date-fns';
 import './Banner.css';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-
-
-const locations = [
-    'Dhaka',
-    'Barisal',
-    'Rangpur',
-    'Savar',
-    'Ashulia',
-    'Nikunja 2, Dhaka',
-    'Nikunja 1, Dhaka',
-    'Nikunja-2 Bus stop, Dhaka',
-    'Tangail',
-    'Banani',
-    'Gulshan',
-    'Farmgate',
-    'Mirpur',
-    'Gabtoli',
-    'Shabag',
-];
+import locations from '../../Locations/Locations';
 
 const Banner = () => {
     const [category, setCategory] = useState("");
     const [searchLocation, setSearchLocation] = useState("");
     const [date, setDate] = useState("");
-    const [open, setOpen] = useState(false);
+    const [locationSugOpen, setLocationSugOpen] = useState(false);
     const navigate = useNavigate();
 
 
     const handleOnchange = (e) => {
-        setOpen(false);
+        setLocationSugOpen(false);
         setSearchLocation(e.target.value);
     }
 
     const handleGetLocation = (location) => {
         setSearchLocation(location);
-        setOpen(true);
+        setLocationSugOpen(true);
     }
 
     const handleCategory = (e) => {
@@ -68,7 +50,7 @@ const Banner = () => {
 
         navigate('/search', {state: { category, formattedDate, searchLocation }})
 
-        console.log(category, formattedDate, searchLocation);
+        // console.log(category, formattedDate, searchLocation);
     }
 
 
@@ -101,7 +83,7 @@ const Banner = () => {
                             </div>
 
                             {
-                                !open && searchLocation && <span className='absolute bg-white mt-1 rounded-lg w-full p-2 h-auto max-h-32' style={{ overflowY: 'scroll', zIndex: 999 }}>
+                                !locationSugOpen && searchLocation && <span className='absolute bg-white mt-1 rounded-lg w-full p-2 h-auto max-h-32' style={{ overflowY: 'scroll', zIndex: 999 }}>
                                     <ul>
                                         {
                                             locations.filter(lt => lt.toLowerCase().includes(searchLocation.toLowerCase())).map((location, i) =>

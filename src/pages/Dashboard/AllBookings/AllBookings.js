@@ -34,8 +34,6 @@ const AllBookings = () => {
         }
     });
 
-    // console.log(bookings)
-
     if (isLoading) {
         return <Loading />
     };

@@ -7,9 +7,11 @@ import SearchQueryNav from '../../components/SearchItems/SearchQueryNav/SearchQu
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
-import BookingModal from '../BookingModal/BookingModal';
+import BookingModal from '../../components/Modals/BookingModal';
+import SearchModal from '../../components/Modals/SearchModal';
 
 const SearchPage = () => {
+    const [activeSearchModal, setActiveSearchModal] = useState(false);
     const [sortQuery, setSortQuery] = useState("");
     const [searchItem, setSearchItem] = useState("");
     const location = useLocation();
@@ -82,13 +84,15 @@ const SearchPage = () => {
     return (
         <div className='max-w-[1400px] px-10 sm:px-20 mx-auto my-14'>
             <div style={{ backgroundColor: "#F5F5F7" }}>
-                <SearchQueryNav category={category} searchLocation={searchLocation} formattedDate={formattedDate} />
+                <SearchQueryNav category={category} searchLocation={searchLocation} formattedDate={formattedDate} setActiveSearchModal={setActiveSearchModal} />
+
                 <hr />
+
                 <div className='p-3 lg:flex gap-4'>
                     <SortSection setSortQuery={setSortQuery} total={hotels.length} />
                     <div>
                         {
-                            transFormItems().map(hotel => <SearchProducts hotel={hotel} setHotelDetails={setHotelDetails} />)
+                            transFormItems().map((hotel, i) => <SearchProducts key={i} hotel={hotel} setHotelDetails={setHotelDetails} />)
                         }
                     </div>
                 </div>
@@ -98,6 +102,12 @@ const SearchPage = () => {
                 hotelDetails && (
                     !userInfo?.role ? navigate('/userSpecification') : <BookingModal hotelDetails={hotelDetails} user={user} userInfo={userInfo} setHotelDetails={setHotelDetails} />
                 )
+            }
+
+            {/* <label htmlFor="searchModalBtn" className="btn">open modal</label> */}
+
+            {
+               activeSearchModal &&  <SearchModal setActiveSearchModal={setActiveSearchModal}/>
             }
         </div>
     );

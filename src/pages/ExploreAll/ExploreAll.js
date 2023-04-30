@@ -7,7 +7,7 @@ import SearchProducts from '../../components/SearchItems/SearchProducts/SearchPr
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
-import BookingModal from '../BookingModal/BookingModal';
+import BookingModal from '../../components/Modals/BookingModal';
 import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
 import Pagination from '../../components/shared/Pagination/Pagination';
 
