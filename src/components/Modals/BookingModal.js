@@ -18,7 +18,7 @@ const BookingModal = ({ hotelDetails, user, userInfo, setHotelDetails }) => {
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const [date, setDate] = useState(new Date());
 
-    console.log(phone)
+    // console.log(phone);
 
     const handleBookingInfo = (data) => {
         const bookingInfo = {

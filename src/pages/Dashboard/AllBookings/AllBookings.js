@@ -110,8 +110,8 @@ const AllBookings = () => {
                 <div>
                     <div>
                         <select onClick={(e) => setSearchBy(e.target.value)} className="select select-bordered select-xs w-full max-w-xs">
-                            <option disabled selected value="User Name">Search By</option>
-                            <option value="User Name">User Name</option>
+                            <option disabled>Search By</option>
+                            <option selected value="User Name">User Name</option>
                             <option value="Hall Name">Hall Name</option>
                         </select>
                     </div>
@@ -145,7 +145,7 @@ const AllBookings = () => {
                             bookings.length > 0 && searchBooking()?.length > 0 ?
                                 <>
                                     {
-                                       searchBooking()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
+                                        searchBooking()?.slice(page * numberOfElementPerPage - numberOfElementPerPage, page * numberOfElementPerPage).map(booking => <tr key={booking?._id}>
                                             <td>
                                                 <div>
                                                     <div className="flex items-center space-x-3">
@@ -184,7 +184,7 @@ const AllBookings = () => {
                                                 </div>
                                             </td>
                                             <td>
-                                                <div>
+                                                <div className='mt-0'>
                                                     <div className="flex items-center space-x-3">
                                                         <div className="avatar">
                                                             <div className="mask mask-squircle w-12 h-12">

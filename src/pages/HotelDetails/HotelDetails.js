@@ -1,19 +1,40 @@
 import { faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
-import { useLoaderData } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 import Loading from '../../components/shared/Loading/Loading';
 import { PhotoProvider, PhotoView } from 'react-photo-view';
 import 'react-photo-view/dist/react-photo-view.css';
 import { TbCurrencyTaka } from 'react-icons/tb';
+import { useQuery } from '@tanstack/react-query';
+import useAuth from '../../hooks/useAuth';
+import BookingModal from '../../components/Modals/BookingModal';
+import { toast } from 'react-hot-toast';
 
 const HotelDetails = () => {
-    const hotel = useLoaderData();;
+    const hotel = useLoaderData();
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const [isOpenBookingModal, setIsOpenBookingModal] = useState(false);
 
     const { name, email, price, capacity, phone, profileImg, images, location, description, facilities, services, termsCondition, rating } = hotel || {};
 
+    const { data: userInfo } = useQuery({
+        queryKey: [user],
+        queryFn: async () => {
+            const res = await fetch(`http://localhost:5000/user/${user?.email}`);
+            const data = await res.json();
+            return data;
+        }
+    });
+
     if (hotel.length < 0) {
         return <Loading />
+    }
+
+    function adminBookingError(){
+        toast.error("Admin could not able to booking", {id: 'adminBookingError'});
+        setIsOpenBookingModal(false);
     }
 
     return (
@@ -35,7 +56,14 @@ const HotelDetails = () => {
 
                         </div>
                         <div>
-                            <button className='btn btn-accent mt-10 sm:mt-0'>Book now</button>
+                            <label
+                                onClick={() => setIsOpenBookingModal(true)}
+                                htmlFor="bookingHallModalBtn"
+                                className='btn btn-accent text-white'
+                            >
+                                Book Now
+                            </label>
+                            {/* <button className='btn btn-accent mt-10 sm:mt-0'>Book now</button> */}
                         </div>
                     </div>
                 </div>
@@ -44,7 +72,7 @@ const HotelDetails = () => {
                     <PhotoProvider>
                         {
                             images.slice(0, 4).map((image, i) =>
-                                <PhotoView  key={i} src={image}>
+                                <PhotoView key={i} src={image}>
                                     <img className="w-full mb-4 cursor-pointer" src={image} alt="" />
                                 </PhotoView>
                             )
@@ -111,9 +139,13 @@ const HotelDetails = () => {
                         <li className="text-red-800">Please, add review section</li>
                     </ul>
                 </div>
-
-
             </div>
+
+            {
+                isOpenBookingModal && (
+                    !userInfo?.role ? navigate('/userSpecification') : userInfo.role === 'admin' ? adminBookingError(): <BookingModal hotelDetails={hotel} user={user} userInfo={userInfo} setHotelDetails={setIsOpenBookingModal} />
+                )
+            }
         </div>
     );
 };

@@ -1,18 +1,16 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import SearchProducts from '../../components/SearchItems/SearchProducts/SearchProducts';
 import SortSection from '../../components/SearchItems/SortSection/SortSection';
 import Loading from '../../components/shared/Loading/Loading';
 import useAuth from '../../hooks/useAuth';
 import BookingModal from '../../components/Modals/BookingModal';
-import { MdOutlineArrowForwardIos, MdOutlineArrowBackIos } from 'react-icons/md';
 import Pagination from '../../components/shared/Pagination/Pagination';
 
 const ExploreAll = () => {
-    const { register, formState: { errors }, handleSubmit } = useForm();
+    const { register,  handleSubmit } = useForm();
     const [sortQuery, setSortQuery] = useState("");
     const [searchItem, setSearchItem] = useState("");
     const [hotelDetails, setHotelDetails] = useState(null);

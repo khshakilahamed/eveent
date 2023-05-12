@@ -3,17 +3,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Loading from '../../../components/shared/Loading/Loading';
 import useAuth from '../../../hooks/useAuth';
-import useUser from '../../../hooks/useUser';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RiLockPasswordFill } from 'react-icons/ri';
+import { toast } from 'react-hot-toast';
 
 const MyProfile = () => {
     const { user, changePassword, error } = useAuth();
     const { register, formState: { errors }, handleSubmit, reset } = useForm();
     const [isChangePass, setIsChangePass] = useState(false);
+    const [profileImg, setProfileImg] = useState("");
+    const [uploadProfileImg, setUploadProfileImg] = useState("");
 
-    const { data: userInfo = [], isLoading } = useQuery({
+    const { data: userInfo = [], isLoading, refetch } = useQuery({
         queryKey: [user],
         queryFn: async () => {
             const res = await fetch(`http://localhost:5000/user/${user?.email}`);
@@ -28,30 +30,109 @@ const MyProfile = () => {
         return <Loading />
     }
 
+    const handleSetProfileImg = (file) => {
+        if (["png" || "jpg" || 'jpeg'].map(tp => (file.type.includes(tp)))) {
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.addEventListener('load', () => {
+                let fileObj = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    src: reader.result
+                }
+                // console.log(fileObj);
+                setProfileImg(fileObj);
+            })
+        }
+        else {
+            toast.error("Please, upload only ['jpg', 'png']")
+        }
+    }
+
+    const handleUploadProfileImg = (e) => {
+        e.preventDefault();
+        const file = e.target.files[0];
+
+        handleSetProfileImg(file);
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        setUploadProfileImg(formData);
+    }
+
+    const saveProfileImage = () => {
+        // console.log(uploadProfileImg);
+        fetch(`https://api.imgbb.com/1/upload?key=${process.env.REACT_APP_imgBB_key}`, {
+            method: 'POST',
+            body: uploadProfileImg
+        })
+            .then(res => res.json())
+            .then(imgData => {
+
+                if (imgData.success) {
+
+                    const updateProfile = {
+                        photoURL: imgData.data.url,
+                    };
+
+                    fetch('http://localhost:5000/user/upload-profile-img', {
+                        method: 'PUT',
+                        headers: {
+                            'content-type': 'application/json',
+                            authorization: `bearer ${localStorage.getItem('accessToken')}`,
+                        },
+                        body: JSON.stringify(updateProfile)
+                    })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.acknowledged) {
+                                toast.success(`Successfully uploaded`);
+                                refetch();
+                            }
+                            else {
+                                toast.error(result.message);
+                            }
+                            setProfileImg("");
+                        })
+                }
+            })
+    }
+
     const handleChangePassword = (data) => {
         changePassword({ ...data, setIsChangePass, reset });
     }
 
-    // console.log(userInfo);
     return (
         <div className='mt-6'>
             <div className='bg-neutral'>
                 <h2 className='pl-5 pt-6 text-2xl'>Profile</h2>
                 <div className="divider"></div>
                 <div className='p-5 flex gap-5'>
-                    <div className='w-32'>
+                    <div className='w-36 flex flex-col justify-center items-center gap-3'>
                         <div className="avatar">
                             <div className="w-28 rounded-xl">
-                                <img src={`${userInfo?.photoURL ? userInfo.photoURL : "https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"}`} alt='' />
+                                {
+                                    profileImg ? <img src={`${profileImg.src}`} alt='' />
+                                        :
+                                        <img src={`${userInfo?.photoURL ? userInfo.photoURL : "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"}`} alt='' />
+                                }
+
                             </div>
                         </div>
-                        <div>
-                            <label htmlFor="uploadProfileImg" className='btn btn-outline btn-accent btn-sm text-sm'>Upload Image</label>
-                            <input className='hidden' type="file" name="" id="uploadProfileImg" />
+                        <div className='text-center'>
+                            {
+                                profileImg ?
+                                    <label onClick={saveProfileImage} className='btn btn-outline btn-accent btn-sm text-sm'>Save</label>
+                                    :
+                                    <label htmlFor="uploadProfileImg" className='btn btn-outline btn-accent btn-sm text-sm'>Change Image</label>
+                            }
+                            <input className='hidden' onChange={handleUploadProfileImg} type="file" name="" id="uploadProfileImg" />
                         </div>
                     </div>
                     <div >
-                        <div>
+                        <div style={{ minHeight: '78px' }}>
                             <h2 className='border-black font-bold text-xl'>Name: {userInfo.name}</h2>
                             <p>Email: <a href={`mailto:${userInfo.email}`}>{userInfo.email}</a></p>
                             {
@@ -60,11 +141,11 @@ const MyProfile = () => {
                                 </>
                                     :
                                     <>
-                                        <p>Phone: <a href={`tel:+${userInfo.phone}`}>{userInfo.phone}</a></p>
-                                        <p>Address: {userInfo.address}</p>
-                                        <p>Upazila: {userInfo.upazila}</p>
-                                        <p>District: {userInfo.district}</p>
-                                        <p>Division: {userInfo.division}</p>
+                                        {userInfo.phone && <p>Phone: <a href={`tel:+${userInfo.phone}`}>{userInfo.phone}</a></p>}
+                                        {userInfo.address && <p>Address: {userInfo.address}</p>}
+                                        {userInfo.upazila && <p>Upazila: {userInfo.upazila}</p>}
+                                        {userInfo.district && <p>District: {userInfo.district}</p>}
+                                        {userInfo.division && <p>Division: {userInfo.division}</p>}
                                     </>
                             }
                         </div>
