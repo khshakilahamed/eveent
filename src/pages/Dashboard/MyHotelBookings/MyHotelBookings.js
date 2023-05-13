@@ -32,6 +32,8 @@ const MyHotelBookings = () => {
         }
     });
 
+    // console.log(bookings);
+
     if (isLoading) {
         return <Loading />
     }
@@ -55,6 +57,7 @@ const MyHotelBookings = () => {
                 <div className='md:flex items-center justify-between'>
                     <h2 className='pb-6 text-2xl'>
                         Hotel Bookings
+
                         {
                             bookings?.length > 0 &&
                             <span className='text-sm ml-3'>[{bookings?.length} founds]</span>
@@ -107,11 +110,11 @@ const MyHotelBookings = () => {
                                         <td>
                                             <div className='flex items-center gap-3'>
                                                 <HiOutlineMail size={22} />
-                                                <a href={`mailto:${booking.hotelEmail}`}>{booking.hotelEmail}</a>
+                                                <a href={`mailto:${booking.email}`}>{booking.email}</a>
                                             </div>
                                             <div className='flex items-center gap-3'>
                                                 <BsTelephoneForward size={20} />
-                                                <a href={`tel:${booking.hotelPhone}`}>{booking.hotelPhone}</a>
+                                                <a href={`tel:${booking.phone}`}>{booking.phone}</a>
                                             </div>
                                         </td>
                                         <td>

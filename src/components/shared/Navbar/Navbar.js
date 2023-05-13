@@ -2,12 +2,10 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import eveentLogo from './../../../assets/Images/EVEENT-LOGO-white.png';
-import { FaUserAlt } from 'react-icons/fa';
 import useUser from '../../../hooks/useUser';
-import Loading from '../Loading/Loading';
 
 const Navbar = () => {
-    const { user, signOutUser, loading } = useAuth();
+    const { user, signOutUser } = useAuth();
     const [userInfo] = useUser();
     const navigate = useNavigate();
 
@@ -35,17 +33,17 @@ const Navbar = () => {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <img src={`${user?.photoURL ? user.photoURL : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdagfNlkCXKS54rDkgY6CjGNtPECsI_SZlKQ&usqp=CAU"}`} alt='user icon' />
+                            <img src={`${user?.photoURL ? user?.photoURL : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdagfNlkCXKS54rDkgY6CjGNtPECsI_SZlKQ&usqp=CAU"}`} alt='user icon' />
                             {/* <img src={`${user.photoURL}`} alt="" /> */}
                         </div>
                     </label>
                     <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
-                        <li><a href="#">Name: {user?.displayName}</a></li>
-                        <li><Link to="/dashboard/myProfile">Profile</Link></li>
+                        <li className='my-1 pl-3'>Name: {user?.displayName}</li>
+                        <li className='my-1'><Link to="/dashboard/myProfile" className='hover:bg-none'>Profile</Link></li>
                         <li>
                             <button
                                 onClick={() => signOutUser(navigate)}
-                                className="btn btn-outline btn-accent w-full text-center">
+                                className="btn btn-sm  btn-accent w-full text-center p-0 m-0">
                                 Sign Out
                             </button>
                         </li>

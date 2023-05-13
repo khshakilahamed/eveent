@@ -70,7 +70,7 @@ const ManageHalls = () => {
     }
 
     const selectPageHandler = (selectedPage) => {
-        if (selectedPage >= 1 && selectedPage < Math.ceil(hotels?.length / numberOfElementPerPage))
+        if (selectedPage >= 1 && selectedPage <= Math.ceil(hotels?.length / numberOfElementPerPage))
             setPage(selectedPage);
     }
 

@@ -4,8 +4,6 @@ import { toast } from 'react-hot-toast';
 import swal from 'sweetalert';
 import Loading from '../../../components/shared/Loading/Loading';
 import Pagination from '../../../components/shared/Pagination/Pagination';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import useAuth from '../../../hooks/useAuth';
 
 const AllUsers = () => {
     const [page, setPage] = useState(1);
@@ -126,7 +124,7 @@ const AllUsers = () => {
                                         <div className="flex items-center space-x-3">
                                             <div className="avatar">
                                                 <div className="mask mask-squircle w-12 h-12">
-                                                    <img src={`${user?.photoURL ? user.photoURL : "https://daisyui.com/tailwind-css-component-profile-3@56w.png"}`} alt="userPhoto" />
+                                                    <img src={`${user?.photoURL ? user.photoURL : "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"}`} alt="userPhoto" />
                                                 </div>
                                             </div>
                                             <div>
@@ -147,14 +145,9 @@ const AllUsers = () => {
                                     </td>
                                     <th>
                                         <div className='flex flex-col gap-3'>
-                                            {/* <div className='text-center'>
-                                                <button
-                                                    onClick={() => handleDeleteUser(user?._id, user?.email)}
-                                                    className='btn btn-error btn-outline btn-sm'>
-                                                    <RiDeleteBin6Line size={22} />
-                                                </button>
-                                            </div> */}
-                                            <button onClick={() => handleMakeAdmin(user?._id, user?.email)} className="btn btn-accent btn-xs">Make Admin</button>
+                                            {
+                                                !(user?.role === 'admin' || user?.role === 'hotelAdmin') && <button onClick={() => handleMakeAdmin(user?._id, user?.email)} className="btn btn-accent btn-xs">Make Admin</button>
+                                            }
                                         </div>
                                     </th>
                                 </tr>)
@@ -166,7 +159,7 @@ const AllUsers = () => {
                 </table>
 
                 <Pagination
-                    collectionArray={users}
+                    collectionArray={searchUsers()}
                     selectPageHandler={selectPageHandler}
                     page={page}
                     numberOfElementPerPage={numberOfElementPerPage}

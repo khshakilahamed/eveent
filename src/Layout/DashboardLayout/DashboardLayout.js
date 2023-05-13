@@ -31,6 +31,7 @@ const DashboardLayout = () => {
                             {
                                 (user.email === userInfo.email && userInfo.role === 'hotelAdmin') && <>
                                     <li><Link to="/dashboard/myHotelBookings">My Hotel Bookings</Link></li>
+                                    <li><Link to="/dashboard/myHotelUpdate">Update Hotel</Link></li>
                                 </>
                             }
                             {

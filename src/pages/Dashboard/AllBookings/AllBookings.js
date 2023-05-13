@@ -76,10 +76,10 @@ const AllBookings = () => {
             return toast.error("Please, select type(searching method)");
         }
 
-        if (searchBy === 'User Name') {
+        if (transformBookings.length !== 0 && searchBy === 'User Name') {
             transformBookings = transformBookings?.filter(booking => booking.name.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
-        if (searchBy === 'Hall Name') {
+        if (transformBookings.length !== 0 && searchBy === 'Hall Name') {
             transformBookings = transformBookings?.filter(booking => booking.hotelName.toLowerCase().includes(searchingValue.toLocaleLowerCase()));
         }
 

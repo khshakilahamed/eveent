@@ -22,6 +22,7 @@ import PrivateRoute from "../PrivateRoute/PrivateRoute";
 import ManageHalls from "../../pages/Dashboard/ManageHalls/ManageHalls";
 import ErrorPage from "../../pages/ErrorPage/ErrorPage";
 import ForgotPassword from "../../pages/ForgotPassword/ForgotPassword";
+import MyHotelUpdate from "../../pages/Dashboard/MyHotelUpdate/MyHotelUpdate";
 
 const router = createBrowserRouter([
     {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
             {
                 path: '/dashboard/myHotelBookings',
                 element: <HotelAdmin><MyHotelBookings /></HotelAdmin>
+            },
+            {
+                path: '/dashboard/myHotelUpdate',
+                element: <HotelAdmin><MyHotelUpdate /></HotelAdmin>
             },
             {
                 path: '/dashboard/allUsers',
