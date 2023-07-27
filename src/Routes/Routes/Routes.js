@@ -25,93 +25,119 @@ import ForgotPassword from "../../pages/ForgotPassword/ForgotPassword";
 import MyHotelUpdate from "../../pages/Dashboard/MyHotelUpdate/MyHotelUpdate";
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <Main></Main>,
-        errorElement: <ErrorPage />,
-        children: [
-            {
-                path: '/',
-                element: <Home></Home>
-            },
-            {
-                path: '/exploreAll',
-                element: <ExploreAll></ExploreAll>
-            },
-            {
-                path: '/login',
-                element: <Login />
-            },
-            {
-                path: '/sign-up',
-                element: <SignUp />
-            },
-            {
-                path: '/search',
-                element: <SearchPage />
-            },
-            {
-                path: 'details/:id',
-                element: <HotelDetails />,
-                loader: ({ params }) => fetch(`http://localhost:5000/hotel/details/${params.id}`)
-            },
-            {
-                path: '/userSpecification',
-                element: <UserSpecification />
-            },
-            {
-                path: '/asUser',
-                element: <AsUser />
-            },
-            {
-                path: '/asHotelAdmin',
-                element: <AsHotelAdmin />
-            },
-            {
-                path: '/forgotPassword',
-                element: <ForgotPassword />
-            },
-        ]
-    },
-    {
-        path: '/dashboard',
-        element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
-        errorElement: <ErrorPage />,
-        children: [
-            {
-                path: '/dashboard',
-                element: <MyBookings />
-            },
-            {
-                path: '/dashboard/myProfile',
-                element: <MyProfile />
-            },
-            {
-                path: '/dashboard/myBookings',
-                element: <MyBookings />
-            },
-            {
-                path: '/dashboard/myHotelBookings',
-                element: <HotelAdmin><MyHotelBookings /></HotelAdmin>
-            },
-            {
-                path: '/dashboard/myHotelUpdate',
-                element: <HotelAdmin><MyHotelUpdate /></HotelAdmin>
-            },
-            {
-                path: '/dashboard/allUsers',
-                element: <AdminRoute> <AllUsers /></AdminRoute>
-            },
-            {
-                path: '/dashboard/allBookings',
-                element: <AdminRoute><AllBookings /></AdminRoute>
-            },
-            {
-                path: '/dashboard/manageHalls',
-                element: <AdminRoute><ManageHalls /></AdminRoute>
-            },
-        ]
-    }
+  {
+    path: "/",
+    element: <Main></Main>,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <Home></Home>,
+      },
+      {
+        path: "/exploreAll",
+        element: <ExploreAll></ExploreAll>,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/sign-up",
+        element: <SignUp />,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
+      },
+      {
+        path: "details/:id",
+        element: <HotelDetails />,
+        loader: ({ params }) =>
+          fetch(`https://eveent-server.vercel.app/hotel/details/${params.id}`),
+      },
+      {
+        path: "/userSpecification",
+        element: <UserSpecification />,
+      },
+      {
+        path: "/asUser",
+        element: <AsUser />,
+      },
+      {
+        path: "/asHotelAdmin",
+        element: <AsHotelAdmin />,
+      },
+      {
+        path: "/forgotPassword",
+        element: <ForgotPassword />,
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <MyBookings />,
+      },
+      {
+        path: "/dashboard/myProfile",
+        element: <MyProfile />,
+      },
+      {
+        path: "/dashboard/myBookings",
+        element: <MyBookings />,
+      },
+      {
+        path: "/dashboard/myHotelBookings",
+        element: (
+          <HotelAdmin>
+            <MyHotelBookings />
+          </HotelAdmin>
+        ),
+      },
+      {
+        path: "/dashboard/myHotelUpdate",
+        element: (
+          <HotelAdmin>
+            <MyHotelUpdate />
+          </HotelAdmin>
+        ),
+      },
+      {
+        path: "/dashboard/allUsers",
+        element: (
+          <AdminRoute>
+            {" "}
+            <AllUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/dashboard/allBookings",
+        element: (
+          <AdminRoute>
+            <AllBookings />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/dashboard/manageHalls",
+        element: (
+          <AdminRoute>
+            <ManageHalls />
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 ]);
 
 export default router;
