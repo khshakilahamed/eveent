@@ -110,12 +110,17 @@ const Login = () => {
         </form>
 
         <div className="flex flex-col items-center my-3">
-          {/* <p>With your social network</p>
-                    <div className='flex gap-4 my-2'>
-                        <img className='cursor-pointer border p-1' src={facebook} alt="" />
-                        <img onClick={handleGoogleSignIn} className='cursor-pointer border p-1' src={google} alt="" />
-                        <img className='cursor-pointer border p-1' src={twitter} alt="" />
-                    </div> */}
+          <p>With your social network</p>
+          <div className="flex gap-4 my-2">
+            {/* <img className="cursor-pointer border p-1" src={facebook} alt="" />  */}
+            <img
+              onClick={handleGoogleSignIn}
+              className="cursor-pointer border p-1"
+              src={google}
+              alt=""
+            />
+            {/* <img className="cursor-pointer border p-1" src={twitter} alt="" /> */}
+          </div>
           <p className="text-black font-light">
             Not a member?{" "}
             <Link
